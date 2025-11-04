@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRISM - Strategic Color Card Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .setup-screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .setup-screen h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .player-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .player-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .player-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .player-btn.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .start-btn {
+            padding: 20px 50px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .game-screen {
+            display: none;
+        }
+
+        .game-screen.active {
+            display: block;
+        }
+
+        .game-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .round-info {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .instruction {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .player-card.human {
+            border: 3px solid #28a745;
+        }
+
+        .player-card-compact {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .player-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .player-name.human::after {
+            content: " 👤";
+        }
+
+        .player-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .player-hand {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-height: 80px;
+        }
+
+        .card {
+            width: 70px;
+            height: 100px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+
+        .card.selected {
+            border: 4px solid #ffc107;
+            transform: translateY(-10px);
+        }
+
+        .card.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .card.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .card.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .card.yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+        .card.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        .card-back {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: default;
+        }
+
+        .card-back:hover {
+            transform: none;
+        }
+
+        .selected-card-display {
+            text-align: center;
+            margin-top: 10px;
+            min-height: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .reveal-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 20px 60px;
+            font-size: 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .reveal-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .reveal-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .revealed-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .revealed-section h3 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .revealed-cards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .revealed-card-item {
+            text-align: center;
+        }
+
+        .revealed-card-item .card {
+            cursor: default;
+        }
+
+        .revealed-card-item .player-label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-result {
+            font-size: 18px;
+            margin-top: 5px;
+        }
+
+        .score-result.positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .score-result.negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .pass-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .pass-section h3 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .continue-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 40px;
+            font-size: 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .continue-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .continue-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .gameover-screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .gameover-screen h2 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .final-scores {
+            margin: 30px 0;
+        }
+
+        .final-score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 20px;
+        }
+
+        .final-score-item.winner {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            font-weight: bold;
+            font-size: 24px;
+            border: 3px solid #f1c40f;
+        }
+
+        .trophy {
+            font-size: 32px;
+        }
+
+        .rules {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .rules h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .rules ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .rules li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎴 PRISM</h1>
+            <p>Strategic Color Card Game</p>
+        </div>
+
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="setup-screen">
+            <h2>Choose Number of Players</h2>
+            <div class="player-selector">
+                <button class="player-btn" onclick="selectPlayers(2)">2 Players</button>
+                <button class="player-btn" onclick="selectPlayers(3)">3 Players</button>
+                <button class="player-btn selected" onclick="selectPlayers(4)">4 Players</button>
+                <button class="player-btn" onclick="selectPlayers(5)">5 Players</button>
+                <button class="player-btn" onclick="selectPlayers(6)">6 Players</button>
+            </div>
+            <button class="start-btn" onclick="startGame()">Start Game</button>
+
+            <div class="rules">
+                <h3>📖 Game Rules</h3>
+                <ul>
+                    <li><strong>Unique Deck:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)
+                        <ul style="margin-top: 5px;">
+                            <li>2 players: numbers 1-5 (25 cards)</li>
+                            <li>3 players: numbers 1-6 (30 cards)</li>
+                            <li>4 players: numbers 1-8 (40 cards)</li>
+                            <li>5 players: numbers 1-10 (50 cards)</li>
+                            <li>6 players: numbers 1-12 (60 cards)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Distribution:</strong> Each player receives 10 cards</li>
+                    <li><strong>Value:</strong> Divided into 4 tiers (e.g. 4 players: 1-2=1pt | 3-4=2pt | 5-6=3pt | 7-8=4pt)</li>
+                    <li><strong>🎨 COLOR ABILITIES:</strong>
+                        <ul style="margin-top: 5px;">
+                            <li><strong>🔴 RED (Double or Nothing):</strong> Lowest card scores ×2, others = negative. With 5-6 players: 2 lowest ×2.</li>
+                            <li><strong>🔵 BLUE (Shared Pool):</strong> All blues summed and divided equally among blue players.</li>
+                            <li><strong>🟢 GREEN (Anti-Majority):</strong> Each green loses 1pt for each lower green played.</li>
+                            <li><strong>🟡 YELLOW (Relative):</strong> +2pt for each higher yellow, -1pt for each higher card (other colors).</li>
+                            <li><strong>🟣 PURPLE (Cooperation):</strong> 
+                                <ul style="margin-top: 3px;">
+                                    <li>2 players: positive only if you're the ONLY purple, otherwise negative</li>
+                                    <li>3-4 players: requires 1+ other purple to be positive</li>
+                                    <li>5-6 players: requires 2+ other purples to be positive</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Passing:</strong> At the end of each round, pass one card to the right</li>
+                    <li><strong>Victory:</strong> Highest points after 10 rounds wins!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen">
+            <div class="game-info">
+                <div class="round-info">Round: <span id="current-round">1</span></div>
+                <button class="player-btn" onclick="resetGame()">New Game</button>
+            </div>
+
+            <div id="instruction" class="instruction"></div>
+
+            <div id="players-container" class="players-grid"></div>
+
+            <button id="reveal-btn" class="reveal-btn" onclick="revealCards()" disabled>
+                Reveal Cards
+            </button>
+
+            <div id="revealed-section" class="revealed-section" style="display: none;"></div>
+
+            <div id="pass-section" class="pass-section" style="display: none;"></div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameover-screen" class="gameover-screen" style="display: none;"></div>
+    </div>
+
+    <script>
+        let gameState = {
+            phase: 'setup', // setup, playing, revealing, passing, gameover
+            numPlayers: 4,
+            players: [],
+            currentRound: 0,
+            selectedCards: {},
+            cardsToPass: {}
+        };
+
+        const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
+        const COLOR_NAMES = {
+            red: 'Red',
+            blue: 'Blue',
+            green: 'Green',
+            yellow: 'Yellow',
+            purple: 'Purple'
+        };
+
+        // Calcola il valore in punti di una carta in base al numero di giocatori
+        function getCardPoints(cardNumber, numPlayers) {
+            let maxNumber;
+            if (numPlayers === 2) maxNumber = 5;
+            else if (numPlayers === 3) maxNumber = 6;
+            else if (numPlayers === 4) maxNumber = 8;
+            else if (numPlayers === 5) maxNumber = 10;
+            else maxNumber = 12;
+            
+            const tierSize = Math.ceil(maxNumber / 4);
+            return Math.ceil(cardNumber / tierSize);
+        }
+
+        function selectPlayers(num) {
+            gameState.numPlayers = num;
+            document.querySelectorAll('.player-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function createDeck(numPlayers) {
+            // Determina quanti numeri servono (sempre 10 carte per giocatore)
+            let maxNumber;
+            if (numPlayers === 2) maxNumber = 5;  // 5 colori × 5 numeri = 25 carte
+            else if (numPlayers === 3) maxNumber = 6;  // 5 × 6 = 30
+            else if (numPlayers === 4) maxNumber = 8;  // 5 × 8 = 40
+            else if (numPlayers === 5) maxNumber = 10; // 5 × 10 = 50
+            else maxNumber = 12; // 5 × 12 = 60
+            
+            const deck = [];
+            COLORS.forEach(color => {
+                for (let number = 1; number <= maxNumber; number++) {
+                    deck.push({ 
+                        color, 
+                        number, 
+                        points: getCardPoints(number, numPlayers),
+                        id: `${color}-${number}` 
+                    });
+                }
+            });
+            
+            return shuffleDeck(deck);
+        }
+
+        function shuffleDeck(deck) {
+            const shuffled = [...deck];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function startGame() {
+            const deck = createDeck(gameState.numPlayers);
+            const cardsPerPlayer = 10;
+            gameState.players = [];
+            
+            for (let i = 0; i < gameState.numPlayers; i++) {
+                gameState.players.push({
+                    id: i,
+                    name: `Player ${i + 1}`,
+                    hand: deck.slice(i * cardsPerPlayer, (i + 1) * cardsPerPlayer),
+                    score: 0,
+                    isHuman: i === 0
+                });
+            }
+            
+            gameState.phase = 'playing';
+            gameState.currentRound = 1;
+            gameState.selectedCards = {};
+            gameState.cardsToPass = {};
+            
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('game-screen').classList.add('active');
+            
+            renderGame();
+            aiSelectCards();
+        }
+
+        function renderGame() {
+            document.getElementById('current-round').textContent = `${gameState.currentRound} di 10`;
+            
+            if (gameState.phase === 'playing') {
+                document.getElementById('instruction').innerHTML = 
+                    '<strong>📌 Select a card from your hand</strong>';
+                document.getElementById('revealed-section').style.display = 'none';
+                document.getElementById('pass-section').style.display = 'none';
+            }
+            
+            const container = document.getElementById('players-container');
+            container.innerHTML = '';
+            
+            gameState.players.forEach(player => {
+                const playerDiv = document.createElement('div');
+                
+                if (player.isHuman) {
+                    // Giocatore umano: mostra le carte
+                    playerDiv.className = 'player-card human';
+                    
+                    const handHTML = player.hand.map(card => {
+                        const isSelected = gameState.selectedCards[player.id]?.id === card.id;
+                        return `
+                            <div class="card ${card.color} ${isSelected ? 'selected' : ''}" 
+                                 onclick="selectCard(${player.id}, '${card.id}')">
+                                ${card.number}
+                                <div style="font-size: 12px; margin-top: 3px;">${card.points}pt</div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    let selectedDisplay = '';
+                    if (gameState.selectedCards[player.id]) {
+                        const card = gameState.selectedCards[player.id];
+                        selectedDisplay = `<div class="selected-card-display">✓ Card selected: ${COLOR_NAMES[card.color]} ${card.number}</div>`;
+                    } else {
+                        selectedDisplay = `<div class="selected-card-display">Select a card</div>`;
+                    }
+                    
+                    playerDiv.innerHTML = `
+                        <div class="player-header">
+                            <div class="player-name human">${player.name}</div>
+                            <div class="player-score">${player.score} pt</div>
+                        </div>
+                        <div class="player-hand">${handHTML}</div>
+                        ${selectedDisplay}
+                    `;
+                } else {
+                    // Altri giocatori: solo nome e punteggio
+                    playerDiv.className = 'player-card-compact';
+                    playerDiv.innerHTML = `
+                        <div class="player-header">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-score">${player.score} pt</div>
+                        </div>
+                        <div class="selected-card-display">${gameState.selectedCards[player.id] ? '✓ Ready' : '⏳ Choosing...'}</div>
+                    `;
+                }
+                
+                container.appendChild(playerDiv);
+            });
+            
+            updateRevealButton();
+        }
+
+        function selectCard(playerId, cardId) {
+            if (gameState.phase !== 'playing') return;
+            
+            const player = gameState.players[playerId];
+            const card = player.hand.find(c => c.id === cardId);
+            
+            if (card) {
+                gameState.selectedCards[playerId] = card;
+                renderGame();
+            }
+        }
+
+        function aiSelectCards() {
+            if (gameState.phase !== 'playing') return;
+            
+            gameState.players.forEach(player => {
+                if (!player.isHuman && !gameState.selectedCards[player.id] && player.hand.length > 0) {
+                    // AI sceglie una carta casuale
+                    const randomIndex = Math.floor(Math.random() * player.hand.length);
+                    gameState.selectedCards[player.id] = player.hand[randomIndex];
+                }
+            });
+            
+            updateRevealButton();
+        }
+
+        function updateRevealButton() {
+            const btn = document.getElementById('reveal-btn');
+            const allSelected = gameState.players.every(p => gameState.selectedCards[p.id]);
+            btn.disabled = !allSelected;
+        }
+
+        function revealCards() {
+            gameState.phase = 'revealing';
+            
+            document.getElementById('instruction').innerHTML = 
+                '<strong>🎯 Round Results</strong>';
+            
+            const revealedSection = document.getElementById('revealed-section');
+            revealedSection.style.display = 'block';
+            
+            let html = '<h3>Cards Revealed</h3><div class="revealed-cards">';
+            
+            // Mostra tutte le carte rivelate
+            gameState.players.forEach(player => {
+                const card = gameState.selectedCards[player.id];
+                html += `
+                    <div class="revealed-card-item">
+                        <div class="card ${card.color}">${card.number}
+                            <div style="font-size: 12px; margin-top: 3px;">${card.points}pt</div>
+                        </div>
+                        <div class="player-label">${player.name}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Calcola i punteggi con le regole dei colori
+            html += '<h3>Scores</h3><div class="revealed-cards">';
+            
+            // Prepara array con tutte le carte
+            const allCards = gameState.players.map(player => ({
+                playerId: player.id,
+                card: gameState.selectedCards[player.id],
+                player: player
+            }));
+            
+            // Calcola punteggi per ogni colore
+            allCards.forEach(info => {
+                const card = info.card;
+                let score = 0;
+                let message = '';
+                
+                if (card.color === 'red') {
+                    // ROSSO: carta/e più bassa/e fanno doppio, altre negative
+                    const redCards = allCards.filter(c => c.card.color === 'red');
+                    const sortedReds = redCards.sort((a, b) => a.card.number - b.card.number);
+                    const numWinners = gameState.numPlayers <= 4 ? 1 : 2;
+                    const winners = sortedReds.slice(0, numWinners);
+                    
+                    if (winners.find(w => w.playerId === info.playerId)) {
+                        score = card.points * 2;
+                        message = `Low red (×2)`;
+                    } else {
+                        score = -card.points;
+                        message = 'High red';
+                    }
+                    
+                } else if (card.color === 'blue') {
+                    // BLU: pool condiviso
+                    const blueCards = allCards.filter(c => c.card.color === 'blue');
+                    const totalBlue = blueCards.reduce((sum, c) => sum + c.card.points, 0);
+                    score = Math.floor(totalBlue / blueCards.length);
+                    message = `Blue pool (${totalBlue}÷${blueCards.length})`;
+                    
+                } else if (card.color === 'green') {
+                    // VERDE: perde 1 punto per ogni verde più basso
+                    const greenCards = allCards.filter(c => c.card.color === 'green');
+                    const lowerGreens = greenCards.filter(c => c.card.number < card.number).length;
+                    score = Math.max(0, card.points - lowerGreens);
+                    message = lowerGreens > 0 ? `${card.points} - ${lowerGreens} lower greens` : `No lower greens`;
+                    
+                } else if (card.color === 'yellow') {
+                    // GIALLO: +2 per giallo alto, -1 per carta (altro colore) alta
+                    const higherYellows = allCards.filter(c => 
+                        c.card.color === 'yellow' && c.card.number > card.number
+                    ).length;
+                    const higherOtherColors = allCards.filter(c => 
+                        c.card.color !== 'yellow' && c.card.number > card.number
+                    ).length;
+                    score = card.points + (higherYellows * 2) - higherOtherColors;
+                    message = `${card.points} + ${higherYellows * 2} yellows - ${higherOtherColors} others`;
+                    
+                } else if (card.color === 'purple') {
+                    // VIOLA: cooperazione (in 2 giocatori è inverso!)
+                    const purpleCards = allCards.filter(c => c.card.color === 'purple');
+                    const otherPurples = purpleCards.length - 1;
+                    
+                    if (gameState.numPlayers === 2) {
+                        // In 2 giocatori: NON deve esserci un altro viola
+                        if (otherPurples === 0) {
+                            score = card.points;
+                            message = 'Unique purple!';
+                        } else {
+                            score = -card.points;
+                            message = `Other purple present`;
+                        }
+                    } else {
+                        // 3+ giocatori: serve cooperazione
+                        const minRequired = gameState.numPlayers <= 4 ? 1 : 2;
+                        if (otherPurples >= minRequired) {
+                            score = card.points;
+                            message = `${otherPurples} other purples!`;
+                        } else {
+                            score = -card.points;
+                            message = `Only ${otherPurples} purple (need ${minRequired})`;
+                        }
+                    }
+                }
+                
+                info.player.score += score;
+                
+                const scoreClass = score > 0 ? 'positive' : score < 0 ? 'negative' : '';
+                
+                html += `
+                    <div class="revealed-card-item">
+                        <div class="card ${card.color}">${card.number}
+                            <div style="font-size: 12px; margin-top: 3px;">${card.points}pt</div>
+                        </div>
+                        <div class="player-label">${info.player.name}</div>
+                        <div class="score-result ${scoreClass}">
+                            ${message}<br>
+                            ${score > 0 ? '+' : ''}${score} punti
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            revealedSection.innerHTML = html;
+            
+            // Rimuovi le carte giocate
+            gameState.players.forEach(player => {
+                const card = gameState.selectedCards[player.id];
+                player.hand = player.hand.filter(c => c.id !== card.id);
+            });
+            
+            renderGame();
+            
+            // Controlla se il gioco è finito
+            if (gameState.players[0].hand.length === 0) {
+                setTimeout(() => endGame(), 2000);
+            } else {
+                setTimeout(() => startPassingPhase(), 2000);
+            }
+        }
+
+        function countMatches(playerId, card) {
+            // Conta quante altre carte hanno stesso numero O colore
+            const otherCards = gameState.players
+                .filter(p => p.id !== playerId)
+                .map(p => gameState.selectedCards[p.id]);
+            
+            const matchingCards = otherCards.filter(otherCard => 
+                otherCard.number === card.number || otherCard.color === card.color
+            );
+            
+            return matchingCards.length;
+        }
+
+        function startPassingPhase() {
+            gameState.phase = 'passing';
+            gameState.cardsToPass = {};
+            
+            document.getElementById('instruction').innerHTML = 
+                '<strong>➡️ Passing Phase</strong> - Select a card to pass to the player on your right';
+            
+            const passSection = document.getElementById('pass-section');
+            passSection.style.display = 'block';
+            
+            let html = '<h3>Pass a card to the right</h3>';
+            
+            // Mostra le carte del giocatore umano
+            const humanPlayer = gameState.players[0];
+            html += '<div class="revealed-cards">';
+            humanPlayer.hand.forEach(card => {
+                html += `
+                    <div class="card ${card.color}" onclick="selectCardToPass(${humanPlayer.id}, '${card.id}')">
+                        ${card.number}
+                        <div style="font-size: 12px; margin-top: 3px;">${card.points}pt</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            html += '<button id="pass-btn" class="continue-btn" onclick="executePass()" disabled>Confirm Pass</button>';
+            
+            passSection.innerHTML = html;
+            
+            // AI seleziona carte da passare
+            aiSelectCardsToPass();
+        }
+
+        function selectCardToPass(playerId, cardId) {
+            const player = gameState.players[playerId];
+            const card = player.hand.find(c => c.id === cardId);
+            
+            if (card) {
+                gameState.cardsToPass[playerId] = card;
+                
+                // Aggiorna visualizzazione
+                document.querySelectorAll('#pass-section .card').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                event.target.classList.add('selected');
+                
+                document.getElementById('pass-btn').disabled = false;
+            }
+        }
+
+        function aiSelectCardsToPass() {
+            gameState.players.forEach(player => {
+                if (!player.isHuman && player.hand.length > 0) {
+                    // AI passa una carta casuale (o potrebbe essere più strategica)
+                    const randomIndex = Math.floor(Math.random() * player.hand.length);
+                    gameState.cardsToPass[player.id] = player.hand[randomIndex];
+                }
+            });
+        }
+
+        function executePass() {
+            // Esegui il passaggio delle carte
+            const cardsToMove = {};
+            gameState.players.forEach(player => {
+                const cardToPass = gameState.cardsToPass[player.id];
+                const nextPlayerId = (player.id + 1) % gameState.numPlayers;
+                cardsToMove[nextPlayerId] = cardToPass;
+            });
+            
+            // Rimuovi le carte passate e aggiungi quelle ricevute
+            gameState.players.forEach(player => {
+                const cardToPass = gameState.cardsToPass[player.id];
+                player.hand = player.hand.filter(c => c.id !== cardToPass.id);
+                player.hand.push(cardsToMove[player.id]);
+            });
+            
+            // Prossimo round
+            gameState.currentRound++;
+            gameState.phase = 'playing';
+            gameState.selectedCards = {};
+            gameState.cardsToPass = {};
+            
+            renderGame();
+            aiSelectCards();
+        }
+
+        function endGame() {
+            gameState.phase = 'gameover';
+            
+            document.getElementById('game-screen').classList.remove('active');
+            const gameoverScreen = document.getElementById('gameover-screen');
+            gameoverScreen.style.display = 'block';
+            
+            // Ordina i giocatori per punteggio
+            const sortedPlayers = [...gameState.players].sort((a, b) => b.score - a.score);
+            const winner = sortedPlayers[0];
+            
+            let html = `
+                <h2>🏆 Game Over!</h2>
+                <div class="trophy">🥇</div>
+                <h3>${winner.name} wins with ${winner.score} points!</h3>
+                <div class="final-scores">
+            `;
+            
+            sortedPlayers.forEach((player, index) => {
+                const isWinner = index === 0;
+                html += `
+                    <div class="final-score-item ${isWinner ? 'winner' : ''}">
+                        <span>${index + 1}. ${player.name}</span>
+                        <span>${player.score} punti</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            html += '<button class="start-btn" onclick="resetGame()">New Game</button>';
+            
+            gameoverScreen.innerHTML = html;
+        }
+
+        function resetGame() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('gameover-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'block';
+            
+            gameState = {
+                phase: 'setup',
+                numPlayers: 4,
+                players: [],
+                currentRound: 0,
+                selectedCards: {},
+                cardsToPass: {}
+            };
+        }
+    </script>
+</body>
+</html>
