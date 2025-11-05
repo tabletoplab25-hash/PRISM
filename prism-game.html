@@ -453,15 +453,14 @@
                     <li><strong>Value:</strong> Divided into 4 tiers (e.g. 4 players: 1-2=1pt | 3-4=2pt | 5-6=3pt | 7-8=4pt)</li>
                     <li><strong>🎨 COLOR ABILITIES:</strong>
                         <ul style="margin-top: 5px;">
-                            <li><strong>🔴 RED (Double or Nothing):</strong> Lowest card scores ×2, others = negative. With 5-6 players: 2 lowest ×2.</li>
+                            <li><strong>🔴 RED (Double or Nothing):</strong> Lowest card scores ×2, others = negative.</li>
                             <li><strong>🔵 BLUE (Shared Pool):</strong> All blues summed and divided equally among blue players.</li>
                             <li><strong>🟢 GREEN (Anti-Majority):</strong> Each green loses 1pt for each lower green played.</li>
-                            <li><strong>🟡 YELLOW (Relative):</strong> +2pt for each higher yellow, -1pt for each higher card (other colors).</li>
-                            <li><strong>🟣 PURPLE (Cooperation):</strong> 
+                            <li><strong>🟡 YELLOW (Relative):</strong> +1pt for each other yellow, -1pt for each lower card (other colors).</li>
+                            <li><strong>🟣 PURPLE (Cooperation):</strong>
                                 <ul style="margin-top: 3px;">
-                                    <li>2 players: positive only if you're the ONLY purple, otherwise negative</li>
-                                    <li>3-4 players: requires 1+ other purple to be positive</li>
-                                    <li>5-6 players: requires 2+ other purples to be positive</li>
+                                    <li>2-3 players: positive only if you're the ONLY purple, otherwise negative</li>
+                                    <li>4-6 players: positive if at least 1 other purple is played, otherwise negative</li>
                                 </ul>
                             </li>
                         </ul>
@@ -736,18 +735,17 @@
                 let message = '';
                 
                 if (card.color === 'red') {
-                    // ROSSO: carta/e più bassa/e fanno doppio, altre negative
+                    // ROSSO: carta più bassa fa doppio, altre negative (sempre)
                     const redCards = allCards.filter(c => c.card.color === 'red');
                     const sortedReds = redCards.sort((a, b) => a.card.number - b.card.number);
-                    const numWinners = gameState.numPlayers <= 4 ? 1 : 2;
-                    const winners = sortedReds.slice(0, numWinners);
+                    const lowestRed = sortedReds[0];
                     
-                    if (winners.find(w => w.playerId === info.playerId)) {
+                    if (lowestRed.playerId === info.playerId) {
                         score = card.points * 2;
-                        message = `Low red (×2)`;
+                        message = `Lowest red (×2)`;
                     } else {
                         score = -card.points;
-                        message = 'High red';
+                        message = 'Higher red';
                     }
                     
                 } else if (card.color === 'blue') {
@@ -765,39 +763,38 @@
                     message = lowerGreens > 0 ? `${card.points} - ${lowerGreens} lower greens` : `No lower greens`;
                     
                 } else if (card.color === 'yellow') {
-                    // GIALLO: +2 per giallo alto, -1 per carta (altro colore) alta
-                    const higherYellows = allCards.filter(c => 
-                        c.card.color === 'yellow' && c.card.number > card.number
+                    // GIALLO: +1 per ogni altro giallo, -1 per ogni carta inferiore (altri colori)
+                    const otherYellows = allCards.filter(c => 
+                        c.card.color === 'yellow' && c.playerId !== info.playerId
                     ).length;
-                    const higherOtherColors = allCards.filter(c => 
-                        c.card.color !== 'yellow' && c.card.number > card.number
+                    const lowerOtherColors = allCards.filter(c => 
+                        c.card.color !== 'yellow' && c.card.number < card.number
                     ).length;
-                    score = card.points + (higherYellows * 2) - higherOtherColors;
-                    message = `${card.points} + ${higherYellows * 2} yellows - ${higherOtherColors} others`;
+                    score = card.points + otherYellows - lowerOtherColors;
+                    message = `${card.points} + ${otherYellows} yellows - ${lowerOtherColors} lower`;
                     
                 } else if (card.color === 'purple') {
-                    // VIOLA: cooperazione (in 2 giocatori è inverso!)
+                    // VIOLA: regola differenziata per player count
                     const purpleCards = allCards.filter(c => c.card.color === 'purple');
                     const otherPurples = purpleCards.length - 1;
                     
-                    if (gameState.numPlayers === 2) {
-                        // In 2 giocatori: NON deve esserci un altro viola
+                    if (gameState.numPlayers <= 3) {
+                        // 2-3 giocatori: SOLO se sei l'unico viola
                         if (otherPurples === 0) {
                             score = card.points;
                             message = 'Unique purple!';
                         } else {
                             score = -card.points;
-                            message = `Other purple present`;
+                            message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''}`;
                         }
                     } else {
-                        // 3+ giocatori: serve cooperazione
-                        const minRequired = gameState.numPlayers <= 4 ? 1 : 2;
-                        if (otherPurples >= minRequired) {
+                        // 4-6 giocatori: serve almeno 1 altro viola
+                        if (otherPurples >= 1) {
                             score = card.points;
-                            message = `${otherPurples} other purples!`;
+                            message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''}!`;
                         } else {
                             score = -card.points;
-                            message = `Only ${otherPurples} purple (need ${minRequired})`;
+                            message = 'No other purple';
                         }
                     }
                 }
