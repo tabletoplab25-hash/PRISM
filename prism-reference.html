@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRISM - Official Rulebook</title>
+    <title>PRISM - Quick Reference Card</title>
     <style>
         * {
             margin: 0;
@@ -12,129 +12,124 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 60px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            font-size: 3em;
-            text-align: center;
-            color: #667eea;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            margin-bottom: 40px;
-            font-size: 1.1em;
-        }
-
-        h2 {
-            color: #667eea;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        h3 {
-            color: #764ba2;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-
-        ul {
-            margin-left: 30px;
-            margin-bottom: 20px;
-        }
-
-        li {
-            margin-bottom: 10px;
-        }
-
-        .color-box {
-            background: #f8f9fa;
-            border-left: 5px solid #667eea;
+            font-family: 'Arial', sans-serif;
+            background: #2c3e50;
             padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .color-box h4 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+        .card-container {
+            background: white;
+            width: 2.5in;
+            height: 3.5in;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .example {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
-            font-style: italic;
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px;
+            text-align: center;
         }
 
-        .important {
-            background: #f8d7da;
-            border-left: 5px solid #dc3545;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
+        .card-header h1 {
+            font-size: 20px;
+            letter-spacing: 3px;
+            margin-bottom: 2px;
+        }
+
+        .card-header p {
+            font-size: 8px;
+            opacity: 0.9;
+        }
+
+        .colors-grid {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+            gap: 3px;
+        }
+
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .color-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            color: white;
             font-weight: bold;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+        .color-icon.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .color-icon.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .color-icon.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .color-icon.yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+        .color-icon.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        .color-info {
+            flex: 1;
+            font-size: 7px;
+            line-height: 1.3;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        .color-name {
+            font-weight: bold;
+            font-size: 8px;
+            margin-bottom: 1px;
         }
 
-        th {
-            background: #667eea;
-            color: white;
+        .rule {
+            color: #555;
+        }
+
+        .icon {
+            font-size: 9px;
+            margin-right: 2px;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 4px;
+            text-align: center;
+            font-size: 6px;
+            color: #666;
+            border-top: 1px solid #ddd;
         }
 
         .print-button {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 30px;
+            padding: 12px 24px;
             background: #667eea;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
         }
 
         .print-button:hover {
@@ -146,185 +141,277 @@
                 background: white;
                 padding: 0;
             }
-            .container {
-                box-shadow: none;
-                padding: 20px;
-            }
             .print-button {
                 display: none;
+            }
+            .card-container {
+                box-shadow: none;
+                page-break-after: always;
+            }
+        }
+
+        @page {
+            size: 2.5in 3.5in;
+            margin: 0;
+        }
+
+        /* Alternative: 4 cards per page layout */
+        .multiple-cards {
+            display: none;
+        }
+
+        @media print {
+            body.print-multiple {
+                display: grid;
+                grid-template-columns: repeat(2, 2.5in);
+                grid-template-rows: repeat(2, 3.5in);
+                gap: 0.25in;
+                padding: 0.5in;
+            }
+            
+            body.print-multiple .card-container:first-child {
+                display: block;
+            }
+            
+            body.print-multiple .multiple-cards {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
-    <button class="print-button" onclick="window.print()">🖨️ Print Rulebook</button>
-    
-    <div class="container">
-        <h1>PRISM</h1>
-        <p class="subtitle">A Strategic Color Card Game for 2-6 Players</p>
+    <button class="print-button" onclick="window.print()">🖨️ Print Card</button>
 
-        <h2>Overview</h2>
-        <p>PRISM is a tactical card game where each color has unique scoring abilities. Players must carefully choose which cards to play and which to pass to opponents, creating a dynamic game of strategy, prediction, and calculated risks.</p>
-
-        <h2>Components</h2>
-        <ul>
-            <li><strong>Unique Deck:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)</li>
-            <li>Card distribution varies by player count (see table below)</li>
-            <li>Each player receives exactly 10 cards</li>
-        </ul>
-
-        <table>
-            <tr>
-                <th>Players</th>
-                <th>Numbers Range</th>
-                <th>Total Cards</th>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>1-5</td>
-                <td>25</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>1-6</td>
-                <td>30</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>1-8</td>
-                <td>40</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>1-10</td>
-                <td>50</td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>1-12</td>
-                <td>60</td>
-            </tr>
-        </table>
-
-        <h2>Card Values</h2>
-        <p>Cards are divided into 4 point tiers based on their number. Higher numbers are worth more points.</p>
-        
-        <div class="example">
-            <strong>Example (4 players, range 1-8):</strong><br>
-            • Numbers 1-2 = 1 point<br>
-            • Numbers 3-4 = 2 points<br>
-            • Numbers 5-6 = 3 points<br>
-            • Numbers 7-8 = 4 points
+    <div class="card-container">
+        <div class="card-header">
+            <h1>PRISM</h1>
+            <p>QUICK REFERENCE</p>
         </div>
 
-        <h2>Setup</h2>
-        <ol>
-            <li>Shuffle all cards together</li>
-            <li>Deal 10 cards to each player</li>
-            <li>All players start with 0 points</li>
-        </ol>
+        <div class="colors-grid">
+            <!-- RED -->
+            <div class="color-row">
+                <div class="color-icon red">🔴</div>
+                <div class="color-info">
+                    <div class="color-name">RED</div>
+                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
+                </div>
+            </div>
 
-        <h2>Game Flow</h2>
-        <p>The game consists of 10 rounds. Each round follows these phases:</p>
+            <!-- BLUE -->
+            <div class="color-row">
+                <div class="color-icon blue">🔵</div>
+                <div class="color-info">
+                    <div class="color-name">BLUE</div>
+                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
+                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                </div>
+            </div>
 
-        <h3>1. Selection Phase</h3>
-        <p>All players simultaneously choose one card from their hand to play face-down.</p>
+            <!-- GREEN -->
+            <div class="color-row">
+                <div class="color-icon green">🟢</div>
+                <div class="color-info">
+                    <div class="color-name">GREEN</div>
+                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
+                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
+                </div>
+            </div>
 
-        <h3>2. Reveal Phase</h3>
-        <p>All cards are revealed simultaneously. Points are calculated based on each color's special ability (see Color Abilities section).</p>
+            <!-- YELLOW -->
+            <div class="color-row">
+                <div class="color-icon yellow">🟡</div>
+                <div class="color-info">
+                    <div class="color-name">YELLOW</div>
+                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                    <div class="rule"><span class="icon">⬇️</span>-1pt per lower other color</div>
+                </div>
+            </div>
 
-        <h3>3. Passing Phase</h3>
-        <p>Each player chooses one card from their remaining hand to pass to the player on their right. This is a strategic decision that affects future rounds.</p>
-
-        <div class="important">
-            ⚠️ IMPORTANT: The passing phase does NOT occur in round 10 (the final round).
-        </div>
-
-        <h2>Color Abilities</h2>
-        <p>The core of PRISM's strategy lies in understanding how each color scores:</p>
-
-        <div class="color-box">
-            <h4>🔴 RED - Double or Nothing</h4>
-            <p>The LOWEST red card scores double points. All other red cards score negative points.</p>
-            <div class="example">
-                <strong>Example:</strong> Red 2 (1pt), Red 5 (3pt), Red 7 (4pt) are played.<br>
-                • Red 2 (1pt base) = +2 points (doubled!)<br>
-                • Red 5 (3pt base) = -3 points<br>
-                • Red 7 (4pt base) = -4 points
+            <!-- PURPLE -->
+            <div class="color-row">
+                <div class="color-icon purple">🟣</div>
+                <div class="color-info">
+                    <div class="color-name">PURPLE</div>
+                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                </div>
             </div>
         </div>
 
-        <div class="color-box">
-            <h4>🔵 BLUE - Shared Pool</h4>
-            <p>All blue card points are added together and divided equally among players who played blue (round down).</p>
-            <div class="example">
-                <strong>Example:</strong> Three players play Blue 2 (1pt), Blue 4 (2pt), and Blue 6 (3pt).<br>
-                • Total pool: 1 + 2 + 3 = 6 points<br>
-                • Each player gets: 6 ÷ 3 = 2 points
-            </div>
+        <div class="footer">
+            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
+            <strong>PASSING:</strong> Pass 1 card right after each round
         </div>
-
-        <div class="color-box">
-            <h4>🟢 GREEN - Anti-Majority</h4>
-            <p>Each green card loses 1 point for every LOWER green card played (minimum 0).</p>
-            <div class="example">
-                <strong>Example:</strong> Green 2, Green 5, Green 8 are played.<br>
-                • Green 2 (1pt) - 0 lower greens = 1 point<br>
-                • Green 5 (3pt) - 1 lower green = 2 points<br>
-                • Green 8 (4pt) - 2 lower greens = 2 points
-            </div>
-        </div>
-
-        <div class="color-box">
-            <h4>🟡 YELLOW - Relative Scoring</h4>
-            <p><strong>+1 point</strong> for each OTHER yellow card played.<br>
-            <strong>-1 point</strong> for each LOWER card of OTHER colors played.</p>
-            <div class="example">
-                <strong>Example:</strong> You play Yellow 8 (4pt base). Others play: Yellow 5, Yellow 10, Red 3, Green 6, Blue 7.<br>
-                • Base: 4 points<br>
-                • +2 points (two other yellows: 5 and 10)<br>
-                • -3 points (three lower other colors: Red 3, Green 6, Blue 7)<br>
-                • <strong>Total: 4 + 2 - 3 = 3 points</strong><br>
-                <br>
-                <strong>Note:</strong> Yellow 1 is always safe (no lower cards possible) but scores fewer points. High yellows score more base points but risk many lower cards!
-            </div>
-        </div>
-
-        <div class="color-box">
-            <h4>🟣 PURPLE - Cooperation (Player Count Dependent)</h4>
-            <p><strong>2-3 Players:</strong> Purple scores positive ONLY if you're the ONLY purple played. If others also play purple, you score negative.</p>
-            <p><strong>4-6 Players:</strong> Purple scores positive if at least 1 OTHER purple is played. If you're the only purple, you score negative.</p>
-            <div class="example">
-                <strong>Example (2 players):</strong><br>
-                • If only you play purple → Positive!<br>
-                • If both play purple → Both negative!<br>
-                <br>
-                <strong>Example (5 players):</strong><br>
-                • If 2+ purples played → All purples positive! (cooperation)<br>
-                • If only 1 purple played → That player negative (no cooperation)
-            </div>
-        </div>
-
-        <h2>End of Game</h2>
-        <p>After 10 rounds, the game ends. The player with the highest total score wins!</p>
-
-        <h2>Strategy Tips</h2>
-        <ul>
-            <li><strong>Red:</strong> Play low to win big, but watch out for even lower reds!</li>
-            <li><strong>Blue:</strong> Safe and consistent. Good for medium-value cards.</li>
-            <li><strong>Green:</strong> Play high to avoid penalties from lower greens.</li>
-            <li><strong>Yellow:</strong> Complex but powerful. Predict what others will play.</li>
-            <li><strong>Purple:</strong> Risk everything for cooperation (or uniqueness in 2p).</li>
-            <li><strong>Passing:</strong> Give away dangerous cards or set up future combinations.</li>
-            <li><strong>Card Counting:</strong> Remember what colors have been played to predict opponents' hands.</li>
-        </ul>
-
-        <h2>Credits</h2>
-        <p style="text-align: center; margin-top: 40px; color: #666;">
-            <strong>PRISM</strong><br>
-            A strategic card game of color and calculation<br>
-            © 2025
-        </p>
     </div>
+
+    <!-- Hidden copies for printing 4 per page -->
+    <div class="card-container multiple-cards">
+        <div class="card-header">
+            <h1>PRISM</h1>
+            <p>QUICK REFERENCE</p>
+        </div>
+        <div class="colors-grid">
+            <div class="color-row">
+                <div class="color-icon red">🔴</div>
+                <div class="color-info">
+                    <div class="color-name">RED</div>
+                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
+                    
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon blue">🔵</div>
+                <div class="color-info">
+                    <div class="color-name">BLUE</div>
+                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
+                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon green">🟢</div>
+                <div class="color-info">
+                    <div class="color-name">GREEN</div>
+                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
+                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon yellow">🟡</div>
+                <div class="color-info">
+                    <div class="color-name">YELLOW</div>
+                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                    <div class="rule"><span class="icon">🎨</span>-1pt per lower other color</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon purple">🟣</div>
+                <div class="color-info">
+                    <div class="color-name">PURPLE</div>
+                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
+            <strong>PASSING:</strong> Pass 1 card right after each round
+        </div>
+    </div>
+
+    <div class="card-container multiple-cards">
+        <div class="card-header">
+            <h1>PRISM</h1>
+            <p>QUICK REFERENCE</p>
+        </div>
+        <div class="colors-grid">
+            <div class="color-row">
+                <div class="color-icon red">🔴</div>
+                <div class="color-info">
+                    <div class="color-name">RED</div>
+                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
+                    
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon blue">🔵</div>
+                <div class="color-info">
+                    <div class="color-name">BLUE</div>
+                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
+                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon green">🟢</div>
+                <div class="color-info">
+                    <div class="color-name">GREEN</div>
+                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
+                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon yellow">🟡</div>
+                <div class="color-info">
+                    <div class="color-name">YELLOW</div>
+                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                    <div class="rule"><span class="icon">🎨</span>-1pt per lower other color</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon purple">🟣</div>
+                <div class="color-info">
+                    <div class="color-name">PURPLE</div>
+                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
+            <strong>PASSING:</strong> Pass 1 card right after each round
+        </div>
+    </div>
+
+    <div class="card-container multiple-cards">
+        <div class="card-header">
+            <h1>PRISM</h1>
+            <p>QUICK REFERENCE</p>
+        </div>
+        <div class="colors-grid">
+            <div class="color-row">
+                <div class="color-icon red">🔴</div>
+                <div class="color-info">
+                    <div class="color-name">RED</div>
+                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
+                    
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon blue">🔵</div>
+                <div class="color-info">
+                    <div class="color-name">BLUE</div>
+                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
+                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon green">🟢</div>
+                <div class="color-info">
+                    <div class="color-name">GREEN</div>
+                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
+                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon yellow">🟡</div>
+                <div class="color-info">
+                    <div class="color-name">YELLOW</div>
+                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                    <div class="rule"><span class="icon">🎨</span>-1pt per lower other color</div>
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="color-icon purple">🟣</div>
+                <div class="color-info">
+                    <div class="color-name">PURPLE</div>
+                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
+            <strong>PASSING:</strong> Pass 1 card right after each round
+        </div>
+    </div>
+
+    <script>
+        // Optional: Toggle between single card and 4-per-page for printing
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'm' || e.key === 'M') {
+                document.body.classList.toggle('print-multiple');
+            }
+        });
+    </script>
 </body>
 </html>
