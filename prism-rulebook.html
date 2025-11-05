@@ -236,19 +236,14 @@
         <h3>3. Passing Phase</h3>
         <p>Each player chooses one card from their remaining hand to pass to the player on their right. This is a strategic decision that affects future rounds.</p>
 
-        <div class="important">
-            ⚠️ IMPORTANT: The passing phase does NOT occur in round 10 (the final round).
-        </div>
-
         <h2>Color Abilities</h2>
         <p>The core of PRISM's strategy lies in understanding how each color scores:</p>
 
         <div class="color-box">
             <h4>🔴 RED - Double or Nothing</h4>
-            <p><strong>2-4 Players:</strong> The LOWEST red card scores double points. All other red cards score negative points.</p>
-            <p><strong>5-6 Players:</strong> The TWO LOWEST red cards score double points. All other red cards score negative points.</p>
+            <p>The LOWEST red card scores double points. All other red cards score negative points.</p>
             <div class="example">
-                <strong>Example (3 players):</strong> Red 2, Red 5, Red 7 are played.<br>
+                <strong>Example:</strong> Red 2 (1pt), Red 5 (3pt), Red 7 (4pt) are played.<br>
                 • Red 2 (1pt base) = +2 points (doubled!)<br>
                 • Red 5 (3pt base) = -3 points<br>
                 • Red 7 (4pt base) = -4 points
@@ -278,53 +273,37 @@
 
         <div class="color-box">
             <h4>🟡 YELLOW - Relative Scoring</h4>
-            <p><strong>+2 points</strong> for each higher yellow card played.<br>
-            <strong>-1 point</strong> for each higher card of OTHER colors played.</p>
+            <p><strong>+1 point</strong> for each OTHER yellow card played.<br>
+            <strong>-1 point</strong> for each LOWER card of OTHER colors played.</p>
             <div class="example">
-                <strong>Example:</strong> You play Yellow 5 (3pt base). Others play: Yellow 7, Yellow 9, Red 8, Green 6.<br>
-                • Base: 3 points<br>
-                • +4 points (two higher yellows: 7 and 9)<br>
-                • -2 points (two higher other colors: Red 8, Green 6)<br>
-                • <strong>Total: 3 + 4 - 2 = 5 points</strong>
+                <strong>Example:</strong> You play Yellow 8 (4pt base). Others play: Yellow 5, Yellow 10, Red 3, Green 6, Blue 7.<br>
+                • Base: 4 points<br>
+                • +2 points (two other yellows: 5 and 10)<br>
+                • -3 points (three lower other colors: Red 3, Green 6, Blue 7)<br>
+                • <strong>Total: 4 + 2 - 3 = 3 points</strong><br>
+                <br>
+                <strong>Note:</strong> Yellow 1 is always safe (no lower cards possible) but scores fewer points. High yellows score more base points but risk many lower cards!
             </div>
         </div>
 
         <div class="color-box">
-            <h4>🟣 PURPLE - Cooperation</h4>
-            <p>Purple scoring depends on player count:</p>
-            <p><strong>2 Players:</strong> Positive ONLY if you're the ONLY purple (inverted cooperation). Negative if another purple is played.</p>
-            <p><strong>3-4 Players:</strong> Positive if at least 1 other purple is played. Negative otherwise.</p>
-            <p><strong>5-6 Players:</strong> Positive if at least 2 other purples are played. Negative otherwise.</p>
+            <h4>🟣 PURPLE - Cooperation (Player Count Dependent)</h4>
+            <p><strong>2-3 Players:</strong> Purple scores positive ONLY if you're the ONLY purple played. If others also play purple, you score negative.</p>
+            <p><strong>4-6 Players:</strong> Purple scores positive if at least 1 OTHER purple is played. If you're the only purple, you score negative.</p>
             <div class="example">
-                <strong>Example (4 players):</strong> Two purples are played.<br>
-                • Both purple players score positive (they cooperated!)<br>
+                <strong>Example (2 players):</strong><br>
+                • If only you play purple → Positive!<br>
+                • If both play purple → Both negative!<br>
                 <br>
-                <strong>Example (2 players):</strong> One purple is played.<br>
-                • The purple player scores positive (unique!)<br>
-                • If both play purple, both score negative!
+                <strong>Example (5 players):</strong><br>
+                • If 2+ purples played → All purples positive! (cooperation)<br>
+                • If only 1 purple played → That player negative (no cooperation)
             </div>
         </div>
 
         <h2>End of Game</h2>
         <p>After 10 rounds, the game ends. The player with the highest total score wins!</p>
 
-        <h2>Strategy Tips</h2>
-        <ul>
-            <li><strong>Red:</strong> Play low to win big, but watch out for even lower reds!</li>
-            <li><strong>Blue:</strong> Safe and consistent. Good for medium-value cards.</li>
-            <li><strong>Green:</strong> Play high to avoid penalties from lower greens.</li>
-            <li><strong>Yellow:</strong> Complex but powerful. Predict what others will play.</li>
-            <li><strong>Purple:</strong> Risk everything for cooperation (or uniqueness in 2p).</li>
-            <li><strong>Passing:</strong> Give away dangerous cards or set up future combinations.</li>
-            <li><strong>Card Counting:</strong> Remember what colors have been played to predict opponents' hands.</li>
-        </ul>
-
-        <h2>Credits</h2>
-        <p style="text-align: center; margin-top: 40px; color: #666;">
-            <strong>PRISM</strong><br>
-            A strategic card game of color and calculation<br>
-            © 2025
-        </p>
-    </div>
+           </div>
 </body>
 </html>
