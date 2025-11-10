@@ -221,6 +221,30 @@
         .card.yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); }
         .card.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
 
+        .card.small-card {
+            width: 50px;
+            height: 70px;
+            font-size: 20px;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card.small-card:hover {
+            transform: none;
+        }
+
+        .card.tiny-card {
+            width: 35px;
+            height: 50px;
+            font-size: 16px;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card.tiny-card:hover {
+            transform: none;
+        }
+
         .card-back {
             background: linear-gradient(135deg, #95a5a6, #7f8c8d);
             cursor: default;
@@ -435,6 +459,19 @@
                 <button class="player-btn" onclick="selectPlayers(5)">5 Players</button>
                 <button class="player-btn" onclick="selectPlayers(6)">6 Players</button>
             </div>
+
+            <h2 style="margin-top: 30px;">Choose Game Variant</h2>
+            <div class="player-selector">
+                <button class="player-btn selected" onclick="selectVariant('standard')">
+                    <strong>Standard</strong><br>
+                    <span style="font-size: 0.8em;">All cards hidden</span>
+                </button>
+                <button class="player-btn" onclick="selectVariant('open')">
+                    <strong>Open Information</strong><br>
+                    <span style="font-size: 0.8em;">5 visible + 5 hidden</span>
+                </button>
+            </div>
+
             <button class="start-btn" onclick="startGame()">Start Game</button>
 
             <div class="rules">
@@ -467,6 +504,19 @@
                     </li>
                     <li><strong>Passing:</strong> At the end of each round, pass one card to the right</li>
                     <li><strong>Victory:</strong> Highest points after 10 rounds wins!</li>
+                    <li><strong>🎲 VARIANTS:</strong>
+                        <ul style="margin-top: 5px;">
+                            <li><strong>Standard:</strong> All cards hidden. Players have complete uncertainty about opponents' hands.</li>
+                            <li><strong>Open Information:</strong> Each player starts with 5 cards in hand (hidden) + 5 cards visible to all. 
+                                <ul style="margin-top: 3px;">
+                                    <li>You can only play cards from your hand</li>
+                                    <li>Visible cards are passed first (automatically), becoming hidden for the receiver</li>
+                                    <li>Once visible cards run out, pass from hand as usual</li>
+                                    <li>Adds strategic planning: you know what cards opponents will receive!</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -499,6 +549,7 @@
         let gameState = {
             phase: 'setup', // setup, playing, revealing, passing, gameover
             numPlayers: 4,
+            variant: 'standard', // standard, open
             players: [],
             currentRound: 0,
             selectedCards: {},
@@ -514,17 +565,13 @@
             purple: 'Purple'
         };
 
-        // Calcola il valore in punti di una carta in base al numero di giocatori
+        // Calcola il valore in punti di una carta (FISSO per stampa fisica)
+        // Valori stampati sulle carte indipendentemente dal numero di giocatori
         function getCardPoints(cardNumber, numPlayers) {
-            let maxNumber;
-            if (numPlayers === 2) maxNumber = 5;
-            else if (numPlayers === 3) maxNumber = 6;
-            else if (numPlayers === 4) maxNumber = 8;
-            else if (numPlayers === 5) maxNumber = 10;
-            else maxNumber = 12;
-            
-            const tierSize = Math.ceil(maxNumber / 4);
-            return Math.ceil(cardNumber / tierSize);
+            if (cardNumber <= 3) return 1;
+            if (cardNumber <= 6) return 2;
+            if (cardNumber <= 9) return 3;
+            return 4;
         }
 
         function selectPlayers(num) {
@@ -533,6 +580,14 @@
                 btn.classList.remove('selected');
             });
             event.target.classList.add('selected');
+        }
+
+        function selectVariant(variant) {
+            gameState.variant = variant;
+            // Find the second player-selector div (variant selector)
+            const variantButtons = document.querySelectorAll('.player-selector')[1].querySelectorAll('.player-btn');
+            variantButtons.forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.player-btn').classList.add('selected');
         }
 
         function createDeck(numPlayers) {
@@ -574,13 +629,29 @@
             gameState.players = [];
             
             for (let i = 0; i < gameState.numPlayers; i++) {
-                gameState.players.push({
-                    id: i,
-                    name: `Player ${i + 1}`,
-                    hand: deck.slice(i * cardsPerPlayer, (i + 1) * cardsPerPlayer),
-                    score: 0,
-                    isHuman: i === 0
-                });
+                const playerCards = deck.slice(i * cardsPerPlayer, (i + 1) * cardsPerPlayer);
+                
+                if (gameState.variant === 'open') {
+                    // Split cards: 5 in hand (hidden), 5 visible
+                    gameState.players.push({
+                        id: i,
+                        name: `Player ${i + 1}`,
+                        hand: playerCards.slice(0, 5),
+                        visibleCards: playerCards.slice(5, 10),
+                        score: 0,
+                        isHuman: i === 0
+                    });
+                } else {
+                    // Standard: all 10 cards in hand
+                    gameState.players.push({
+                        id: i,
+                        name: `Player ${i + 1}`,
+                        hand: playerCards,
+                        visibleCards: [],
+                        score: 0,
+                        isHuman: i === 0
+                    });
+                }
             }
             
             gameState.phase = 'playing';
@@ -615,6 +686,24 @@
                     // Giocatore umano: mostra le carte
                     playerDiv.className = 'player-card human';
                     
+                    // Visible cards (if open variant)
+                    let visibleHTML = '';
+                    if (gameState.variant === 'open' && player.visibleCards.length > 0) {
+                        visibleHTML = `
+                            <div style="margin-bottom: 10px;">
+                                <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Visible Cards (to pass):</div>
+                                <div class="player-hand">
+                                    ${player.visibleCards.map(card => `
+                                        <div class="card ${card.color} small-card">
+                                            ${card.number}
+                                            <div style="font-size: 10px; margin-top: 2px;">${card.points}pt</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
                     const handHTML = player.hand.map(card => {
                         const isSelected = gameState.selectedCards[player.id]?.id === card.id;
                         return `
@@ -639,18 +728,36 @@
                             <div class="player-name human">${player.name}</div>
                             <div class="player-score">${player.score} pt</div>
                         </div>
+                        ${visibleHTML}
+                        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Your Hand:</div>
                         <div class="player-hand">${handHTML}</div>
                         ${selectedDisplay}
                     `;
                 } else {
-                    // Altri giocatori: solo nome e punteggio
+                    // Altri giocatori: nome, punteggio e visible cards (se open variant)
                     playerDiv.className = 'player-card-compact';
+                    
+                    let visibleHTML = '';
+                    if (gameState.variant === 'open' && player.visibleCards.length > 0) {
+                        visibleHTML = `
+                            <div style="font-size: 11px; color: #666; margin-top: 5px;">Visible:</div>
+                            <div style="display: flex; gap: 3px; flex-wrap: wrap; margin-top: 3px;">
+                                ${player.visibleCards.map(card => `
+                                    <div class="card ${card.color} tiny-card">
+                                        ${card.number}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                    
                     playerDiv.innerHTML = `
                         <div class="player-header">
                             <div class="player-name">${player.name}</div>
                             <div class="player-score">${player.score} pt</div>
                         </div>
                         <div class="selected-card-display">${gameState.selectedCards[player.id] ? '✓ Ready' : '⏳ Choosing...'}</div>
+                        ${visibleHTML}
                     `;
                 }
                 
@@ -811,7 +918,7 @@
                         <div class="player-label">${info.player.name}</div>
                         <div class="score-result ${scoreClass}">
                             ${message}<br>
-                            ${score > 0 ? '+' : ''}${score} points
+                            ${score > 0 ? '+' : ''}${score} punti
                         </div>
                     </div>
                 `;
@@ -853,6 +960,31 @@
             gameState.phase = 'passing';
             gameState.cardsToPass = {};
             
+            // Open variant: if players still have visible cards, auto-pass them
+            if (gameState.variant === 'open') {
+                const humanPlayer = gameState.players[0];
+                
+                if (humanPlayer.visibleCards.length > 0) {
+                    // Auto-pass visible cards (no selection needed)
+                    document.getElementById('instruction').innerHTML = 
+                        '<strong>➡️ Passing Phase</strong> - Passing visible cards automatically...';
+                    
+                    const passSection = document.getElementById('pass-section');
+                    passSection.style.display = 'block';
+                    
+                    let html = '<h3>Passing Visible Cards</h3>';
+                    html += '<div style="text-align: center; margin: 20px 0;">';
+                    html += '<p>Each player passes their first visible card to the right.</p>';
+                    html += '<p style="margin-top: 10px;">The cards become hidden for the receiver.</p>';
+                    html += '</div>';
+                    html += '<button class="continue-btn" onclick="executePass()">Continue</button>';
+                    
+                    passSection.innerHTML = html;
+                    return;
+                }
+            }
+            
+            // Standard passing: select from hand
             document.getElementById('instruction').innerHTML = 
                 '<strong>➡️ Passing Phase</strong> - Select a card to pass to the player on your right';
             
@@ -912,18 +1044,54 @@
         function executePass() {
             // Esegui il passaggio delle carte
             const cardsToMove = {};
-            gameState.players.forEach(player => {
-                const cardToPass = gameState.cardsToPass[player.id];
-                const nextPlayerId = (player.id + 1) % gameState.numPlayers;
-                cardsToMove[nextPlayerId] = cardToPass;
-            });
             
-            // Rimuovi le carte passate e aggiungi quelle ricevute
-            gameState.players.forEach(player => {
-                const cardToPass = gameState.cardsToPass[player.id];
-                player.hand = player.hand.filter(c => c.id !== cardToPass.id);
-                player.hand.push(cardsToMove[player.id]);
-            });
+            if (gameState.variant === 'open') {
+                // Open variant: pass visible cards first (they become hidden for receiver)
+                // When visible cards run out, pass from hand
+                gameState.players.forEach(player => {
+                    let cardToPass;
+                    
+                    if (player.visibleCards.length > 0) {
+                        // Pass first visible card (automatically selected)
+                        cardToPass = player.visibleCards[0];
+                    } else {
+                        // No visible cards left, pass from hand (selected by player)
+                        cardToPass = gameState.cardsToPass[player.id];
+                    }
+                    
+                    const nextPlayerId = (player.id + 1) % gameState.numPlayers;
+                    cardsToMove[nextPlayerId] = cardToPass;
+                });
+                
+                // Move cards: visible → opponent's hand (hidden)
+                gameState.players.forEach(player => {
+                    let cardToPass;
+                    
+                    if (player.visibleCards.length > 0) {
+                        cardToPass = player.visibleCards[0];
+                        player.visibleCards = player.visibleCards.filter(c => c.id !== cardToPass.id);
+                    } else {
+                        cardToPass = gameState.cardsToPass[player.id];
+                        player.hand = player.hand.filter(c => c.id !== cardToPass.id);
+                    }
+                    
+                    // Received card goes to hand (hidden)
+                    player.hand.push(cardsToMove[player.id]);
+                });
+            } else {
+                // Standard variant: pass from hand as usual
+                gameState.players.forEach(player => {
+                    const cardToPass = gameState.cardsToPass[player.id];
+                    const nextPlayerId = (player.id + 1) % gameState.numPlayers;
+                    cardsToMove[nextPlayerId] = cardToPass;
+                });
+                
+                gameState.players.forEach(player => {
+                    const cardToPass = gameState.cardsToPass[player.id];
+                    player.hand = player.hand.filter(c => c.id !== cardToPass.id);
+                    player.hand.push(cardsToMove[player.id]);
+                });
+            }
             
             // Prossimo round
             gameState.currentRound++;
@@ -958,7 +1126,7 @@
                 html += `
                     <div class="final-score-item ${isWinner ? 'winner' : ''}">
                         <span>${index + 1}. ${player.name}</span>
-                        <span>${player.score} points</span>
+                        <span>${player.score} punti</span>
                     </div>
                 `;
             });
