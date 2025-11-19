@@ -477,23 +477,24 @@
             <div class="rules">
                 <h3>📖 Game Rules</h3>
                 <ul>
-                    <li><strong>Unique Deck:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)
+                    <li><strong>Deck Composition:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)
                         <ul style="margin-top: 5px;">
-                            <li>2 players: numbers 1-5 (25 cards)</li>
-                            <li>3 players: numbers 1-6 (30 cards)</li>
-                            <li>4 players: numbers 1-8 (40 cards)</li>
-                            <li>5 players: numbers 1-10 (50 cards)</li>
-                            <li>6 players: numbers 1-12 (60 cards)</li>
+                            <li>Card values: 1, 2, 3, 4 (each value = victory points)</li>
+                            <li>Each card exists in up to 3 copies</li>
+                            <li>2 players: 2 copies of values 1-3 (30 cards total)</li>
+                            <li>3-4 players: 2 copies of values 1-4 (40 cards total)</li>
+                            <li>5-6 players: 3 copies of values 1-4 (60 cards total)</li>
+                            <li><strong>Each player always receives exactly 10 cards</strong></li>
+                            <li>Remaining cards are removed from play (face-down)</li>
                         </ul>
                     </li>
-                    <li><strong>Distribution:</strong> Each player receives 10 cards</li>
-                    <li><strong>Value:</strong> Divided into 4 tiers (e.g. 4 players: 1-2=1pt | 3-4=2pt | 5-6=3pt | 7-8=4pt)</li>
+                    <li><strong>Card Value:</strong> The number on the card equals its victory point value (card 1 = 1pt, card 2 = 2pt, etc.)</li>
                     <li><strong>🎨 COLOR ABILITIES:</strong>
                         <ul style="margin-top: 5px;">
-                            <li><strong>🔴 RED (Double or Nothing):</strong> Lowest card scores ×2, others = negative.</li>
-                            <li><strong>🔵 BLUE (Shared Pool):</strong> All blues summed and divided equally among blue players.</li>
-                            <li><strong>🟢 GREEN (Anti-Majority):</strong> Each green loses 1pt for each lower green played.</li>
-                            <li><strong>🟡 YELLOW (Relative):</strong> +1pt for each other yellow, -1pt for each lower card (other colors).</li>
+                            <li><strong>🔴 RED (Double or Nothing):</strong> Lowest VALUE card(s) score ×2, others = negative. Tied cards both score ×2.</li>
+                            <li><strong>🔵 BLUE (Shared Pool):</strong> All blues summed and divided equally among blue players (round down).</li>
+                            <li><strong>🟢 GREEN (Anti-Majority):</strong> -1pt for each LOWER VALUE green. Same value cards don't clash.</li>
+                            <li><strong>🟡 YELLOW (Relative):</strong> +1pt per other yellow, -1pt per LOWER VALUE card (other colors). Same value cards don't clash.</li>
                             <li><strong>🟣 PURPLE (Cooperation):</strong>
                                 <ul style="margin-top: 3px;">
                                     <li>2-3 players: positive only if you're the ONLY purple, otherwise negative</li>
@@ -567,11 +568,9 @@
 
         // Calcola il valore in punti di una carta (FISSO per stampa fisica)
         // Valori stampati sulle carte indipendentemente dal numero di giocatori
-        function getCardPoints(cardNumber, numPlayers) {
-            if (cardNumber <= 3) return 1;
-            if (cardNumber <= 6) return 2;
-            if (cardNumber <= 9) return 3;
-            return 4;
+        // NUOVO SISTEMA: Il valore della carta = punti vittoria
+        function getCardPoints(cardNumber) {
+            return cardNumber; // Carta 1 = 1pt, carta 2 = 2pt, carta 3 = 3pt, carta 4 = 4pt
         }
 
         function selectPlayers(num) {
@@ -591,25 +590,55 @@
         }
 
         function createDeck(numPlayers) {
-            // Determina quanti numeri servono (sempre 10 carte per giocatore)
-            let maxNumber;
-            if (numPlayers === 2) maxNumber = 5;  // 5 colori × 5 numeri = 25 carte
-            else if (numPlayers === 3) maxNumber = 6;  // 5 × 6 = 30
-            else if (numPlayers === 4) maxNumber = 8;  // 5 × 8 = 40
-            else if (numPlayers === 5) maxNumber = 10; // 5 × 10 = 50
-            else maxNumber = 12; // 5 × 12 = 60
-            
+            // NUOVO SISTEMA: Carte 1-4, ogni valore in 3 copie, 5 colori
             const deck = [];
-            COLORS.forEach(color => {
-                for (let number = 1; number <= maxNumber; number++) {
-                    deck.push({ 
-                        color, 
-                        number, 
-                        points: getCardPoints(number, numPlayers),
-                        id: `${color}-${number}` 
-                    });
-                }
-            });
+            
+            if (numPlayers === 2) {
+                // 2 copie di valori 1,2,3 (30 carte totali, 15 per giocatore)
+                COLORS.forEach(color => {
+                    for (let value = 1; value <= 3; value++) {
+                        for (let copy = 1; copy <= 2; copy++) {
+                            deck.push({
+                                id: `${color}-${value}-c${copy}`,
+                                color,
+                                number: value,
+                                points: value,
+                                copyNumber: copy
+                            });
+                        }
+                    }
+                });
+            } else if (numPlayers === 3 || numPlayers === 4) {
+                // 2 copie di valori 1,2,3,4 (40 carte totali, 10 per giocatore)
+                COLORS.forEach(color => {
+                    for (let value = 1; value <= 4; value++) {
+                        for (let copy = 1; copy <= 2; copy++) {
+                            deck.push({
+                                id: `${color}-${value}-c${copy}`,
+                                color,
+                                number: value,
+                                points: value,
+                                copyNumber: copy
+                            });
+                        }
+                    }
+                });
+            } else {
+                // 5-6 giocatori: 3 copie di tutti i valori 1,2,3,4 (60 carte totali, 10 per giocatore)
+                COLORS.forEach(color => {
+                    for (let value = 1; value <= 4; value++) {
+                        for (let copy = 1; copy <= 3; copy++) {
+                            deck.push({
+                                id: `${color}-${value}-c${copy}`,
+                                color,
+                                number: value,
+                                points: value,
+                                copyNumber: copy
+                            });
+                        }
+                    }
+                });
+            }
             
             return shuffleDeck(deck);
         }
@@ -842,14 +871,14 @@
                 let message = '';
                 
                 if (card.color === 'red') {
-                    // ROSSO: carta più bassa fa doppio, altre negative (sempre)
+                    // ROSSO: la/le carta/e di VALORE più basso fanno ×2, altre negative
+                    // Se ci sono più carte con lo stesso valore basso, tutte fanno ×2
                     const redCards = allCards.filter(c => c.card.color === 'red');
-                    const sortedReds = redCards.sort((a, b) => a.card.number - b.card.number);
-                    const lowestRed = sortedReds[0];
+                    const lowestValue = Math.min(...redCards.map(c => c.card.number));
                     
-                    if (lowestRed.playerId === info.playerId) {
+                    if (card.number === lowestValue) {
                         score = card.points * 2;
-                        message = `Lowest red (×2)`;
+                        message = `Lowest red value (×2)`;
                     } else {
                         score = -card.points;
                         message = 'Higher red';
@@ -863,14 +892,16 @@
                     message = `Blue pool (${totalBlue}÷${blueCards.length})`;
                     
                 } else if (card.color === 'green') {
-                    // VERDE: perde 1 punto per ogni verde più basso
+                    // VERDE: -1 punto per ogni verde di VALORE inferiore
+                    // Carte dello stesso valore NON si scontrano
                     const greenCards = allCards.filter(c => c.card.color === 'green');
                     const lowerGreens = greenCards.filter(c => c.card.number < card.number).length;
-                    score = Math.max(0, card.points - lowerGreens);
+                    score = card.points - lowerGreens;
                     message = lowerGreens > 0 ? `${card.points} - ${lowerGreens} lower greens` : `No lower greens`;
                     
                 } else if (card.color === 'yellow') {
-                    // GIALLO: +1 per ogni altro giallo, -1 per ogni carta inferiore (altri colori)
+                    // GIALLO: +1 per ogni altro giallo, -1 per ogni carta di VALORE inferiore (altri colori)
+                    // Carte dello stesso valore NON si scontrano
                     const otherYellows = allCards.filter(c => 
                         c.card.color === 'yellow' && c.playerId !== info.playerId
                     ).length;
@@ -918,7 +949,7 @@
                         <div class="player-label">${info.player.name}</div>
                         <div class="score-result ${scoreClass}">
                             ${message}<br>
-                            ${score > 0 ? '+' : ''}${score} points
+                            ${score > 0 ? '+' : ''}${score} punti
                         </div>
                     </div>
                 `;
