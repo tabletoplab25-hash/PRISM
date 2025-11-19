@@ -15,18 +15,57 @@
             font-family: 'Arial', sans-serif;
             background: #2c3e50;
             padding: 20px;
-            display: flex;
+        }
+
+        .print-info {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .print-info h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .print-button {
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        .print-button:hover {
+            background: #5568d3;
+        }
+
+        .cards-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto 20px;
+            padding: 10mm;
+            display: grid;
+            grid-template-columns: repeat(3, 63mm);
+            grid-template-rows: repeat(2, 88mm);
+            gap: 5mm;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            align-content: center;
+            page-break-after: always;
         }
 
         .card-container {
             background: white;
-            width: 2.5in;
-            height: 3.5in;
+            width: 63mm;
+            height: 88mm;
             border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             border: 2px solid #333;
             overflow: hidden;
             display: flex;
@@ -117,301 +156,382 @@
             border-top: 1px solid #ddd;
         }
 
-        .print-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-
-        .print-button:hover {
-            background: #5568d3;
-        }
-
         @media print {
             body {
                 background: white;
                 padding: 0;
             }
+
+            .print-info,
             .print-button {
                 display: none;
             }
-            .card-container {
+
+            .cards-page {
+                margin: 0;
+                padding: 10mm;
                 box-shadow: none;
                 page-break-after: always;
+            }
+
+            .card-container {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
             }
         }
 
         @page {
-            size: 2.5in 3.5in;
+            size: A4;
             margin: 0;
-        }
-
-        /* Alternative: 4 cards per page layout */
-        .multiple-cards {
-            display: none;
-        }
-
-        @media print {
-            body.print-multiple {
-                display: grid;
-                grid-template-columns: repeat(2, 2.5in);
-                grid-template-rows: repeat(2, 3.5in);
-                gap: 0.25in;
-                padding: 0.5in;
-            }
-            
-            body.print-multiple .card-container:first-child {
-                display: block;
-            }
-            
-            body.print-multiple .multiple-cards {
-                display: block;
-            }
         }
     </style>
 </head>
 <body>
-    <button class="print-button" onclick="window.print()">🖨️ Print Card</button>
-
-    <div class="card-container">
-        <div class="card-header">
-            <h1>PRISM</h1>
-            <p>QUICK REFERENCE</p>
-        </div>
-
-        <div class="colors-grid">
-            <!-- RED -->
-            <div class="color-row">
-                <div class="color-icon red">🔴</div>
-                <div class="color-info">
-                    <div class="color-name">RED</div>
-                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
-                </div>
-            </div>
-
-            <!-- BLUE -->
-            <div class="color-row">
-                <div class="color-icon blue">🔵</div>
-                <div class="color-info">
-                    <div class="color-name">BLUE</div>
-                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
-                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
-                </div>
-            </div>
-
-            <!-- GREEN -->
-            <div class="color-row">
-                <div class="color-icon green">🟢</div>
-                <div class="color-info">
-                    <div class="color-name">GREEN</div>
-                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
-                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
-                </div>
-            </div>
-
-            <!-- YELLOW -->
-            <div class="color-row">
-                <div class="color-icon yellow">🟡</div>
-                <div class="color-info">
-                    <div class="color-name">YELLOW</div>
-                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                    <div class="rule"><span class="icon">⬇️</span>-1pt per lower other color</div>
-                </div>
-            </div>
-
-            <!-- PURPLE -->
-            <div class="color-row">
-                <div class="color-icon purple">🟣</div>
-                <div class="color-info">
-                    <div class="color-name">PURPLE</div>
-                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
-                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
-            <strong>PASSING:</strong> Pass 1 card right after each round
-        </div>
+    <div class="print-info">
+        <h1>🎴 PRISM - Quick Reference Card</h1>
+        <p><strong>Format:</strong> 6 cards per A4 sheet (63mm × 88mm poker size)</p>
+        <button class="print-button" onclick="window.print()">🖨️ Print Cards</button>
+        <p style="margin-top: 15px; font-size: 14px; color: #666;">
+            <strong>Printing Tips:</strong><br>
+            • Use quality paper (at least 160gsm)<br>
+            • Print in color with "Actual Size" setting<br>
+            • Cut precisely along borders<br>
+            • Consider laminating for durability
+        </p>
     </div>
 
-    <!-- Hidden copies for printing 4 per page -->
-    <div class="card-container multiple-cards">
-        <div class="card-header">
-            <h1>PRISM</h1>
-            <p>QUICK REFERENCE</p>
+    <div class="cards-page">
+        <!-- Card 1 -->
+        <div class="card-container">
+            <div class="card-header">
+                <h1>PRISM</h1>
+                <p>QUICK REFERENCE</p>
+            </div>
+
+            <div class="colors-grid">
+                <!-- RED -->
+                <div class="color-row">
+                    <div class="color-icon red">🔴</div>
+                    <div class="color-info">
+                        <div class="color-name">RED</div>
+                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
+                        <div class="rule"><span class="icon">🔁</span>Tied cards both ×2</div>
+                    </div>
+                </div>
+
+                <!-- BLUE -->
+                <div class="color-row">
+                    <div class="color-icon blue">🔵</div>
+                    <div class="color-info">
+                        <div class="color-name">BLUE</div>
+                        <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # blues</div>
+                        <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                    </div>
+                </div>
+
+                <!-- GREEN -->
+                <div class="color-row">
+                    <div class="color-icon green">🟢</div>
+                    <div class="color-info">
+                        <div class="color-name">GREEN</div>
+                        <div class="rule"><span class="icon">➖</span>-1pt per lower value green</div>
+                        <div class="rule"><span class="icon">🔁</span>Same value = no clash</div>
+                    </div>
+                </div>
+
+                <!-- YELLOW -->
+                <div class="color-row">
+                    <div class="color-icon yellow">🟡</div>
+                    <div class="color-info">
+                        <div class="color-name">YELLOW</div>
+                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
+                    </div>
+                </div>
+
+                <!-- PURPLE -->
+                <div class="color-row">
+                    <div class="color-icon purple">🟣</div>
+                    <div class="color-info">
+                        <div class="color-name">PURPLE</div>
+                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
+                <strong>PASSING:</strong> Pass 1 card right after each round
+            </div>
         </div>
-        <div class="colors-grid">
-            <div class="color-row">
-                <div class="color-icon red">🔴</div>
-                <div class="color-info">
-                    <div class="color-name">RED</div>
-                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
-                    
+
+        <!-- Cards 2-6: Duplicates -->
+        <div class="card-container">
+            <div class="card-header">
+                <h1>PRISM</h1>
+                <p>QUICK REFERENCE</p>
+            </div>
+            <div class="colors-grid">
+                <div class="color-row">
+                    <div class="color-icon red">🔴</div>
+                    <div class="color-info">
+                        <div class="color-name">RED</div>
+                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
+                        <div class="rule"><span class="icon">🔁</span>Tied cards both ×2</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon blue">🔵</div>
+                    <div class="color-info">
+                        <div class="color-name">BLUE</div>
+                        <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # blues</div>
+                        <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon green">🟢</div>
+                    <div class="color-info">
+                        <div class="color-name">GREEN</div>
+                        <div class="rule"><span class="icon">➖</span>-1pt per lower value green</div>
+                        <div class="rule"><span class="icon">🔁</span>Same value = no clash</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon yellow">🟡</div>
+                    <div class="color-info">
+                        <div class="color-name">YELLOW</div>
+                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon purple">🟣</div>
+                    <div class="color-info">
+                        <div class="color-name">PURPLE</div>
+                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                    </div>
                 </div>
             </div>
-            <div class="color-row">
-                <div class="color-icon blue">🔵</div>
-                <div class="color-info">
-                    <div class="color-name">BLUE</div>
-                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
-                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon green">🟢</div>
-                <div class="color-info">
-                    <div class="color-name">GREEN</div>
-                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
-                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon yellow">🟡</div>
-                <div class="color-info">
-                    <div class="color-name">YELLOW</div>
-                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                    <div class="rule"><span class="icon">🎨</span>-1pt per lower other color</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon purple">🟣</div>
-                <div class="color-info">
-                    <div class="color-name">PURPLE</div>
-                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
-                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
-                </div>
+            <div class="footer">
+                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
+                <strong>PASSING:</strong> Pass 1 card right after each round
             </div>
         </div>
-        <div class="footer">
-            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
-            <strong>PASSING:</strong> Pass 1 card right after each round
+
+        <div class="card-container">
+            <div class="card-header">
+                <h1>PRISM</h1>
+                <p>QUICK REFERENCE</p>
+            </div>
+            <div class="colors-grid">
+                <div class="color-row">
+                    <div class="color-icon red">🔴</div>
+                    <div class="color-info">
+                        <div class="color-name">RED</div>
+                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
+                        <div class="rule"><span class="icon">🔁</span>Tied cards both ×2</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon blue">🔵</div>
+                    <div class="color-info">
+                        <div class="color-name">BLUE</div>
+                        <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # blues</div>
+                        <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon green">🟢</div>
+                    <div class="color-info">
+                        <div class="color-name">GREEN</div>
+                        <div class="rule"><span class="icon">➖</span>-1pt per lower value green</div>
+                        <div class="rule"><span class="icon">🔁</span>Same value = no clash</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon yellow">🟡</div>
+                    <div class="color-info">
+                        <div class="color-name">YELLOW</div>
+                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon purple">🟣</div>
+                    <div class="color-info">
+                        <div class="color-name">PURPLE</div>
+                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
+                <strong>PASSING:</strong> Pass 1 card right after each round
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card-header">
+                <h1>PRISM</h1>
+                <p>QUICK REFERENCE</p>
+            </div>
+            <div class="colors-grid">
+                <div class="color-row">
+                    <div class="color-icon red">🔴</div>
+                    <div class="color-info">
+                        <div class="color-name">RED</div>
+                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
+                        <div class="rule"><span class="icon">🔁</span>Tied cards both ×2</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon blue">🔵</div>
+                    <div class="color-info">
+                        <div class="color-name">BLUE</div>
+                        <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # blues</div>
+                        <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon green">🟢</div>
+                    <div class="color-info">
+                        <div class="color-name">GREEN</div>
+                        <div class="rule"><span class="icon">➖</span>-1pt per lower value green</div>
+                        <div class="rule"><span class="icon">🔁</span>Same value = no clash</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon yellow">🟡</div>
+                    <div class="color-info">
+                        <div class="color-name">YELLOW</div>
+                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon purple">🟣</div>
+                    <div class="color-info">
+                        <div class="color-name">PURPLE</div>
+                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
+                <strong>PASSING:</strong> Pass 1 card right after each round
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card-header">
+                <h1>PRISM</h1>
+                <p>QUICK REFERENCE</p>
+            </div>
+            <div class="colors-grid">
+                <div class="color-row">
+                    <div class="color-icon red">🔴</div>
+                    <div class="color-info">
+                        <div class="color-name">RED</div>
+                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
+                        <div class="rule"><span class="icon">🔁</span>Tied cards both ×2</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon blue">🔵</div>
+                    <div class="color-info">
+                        <div class="color-name">BLUE</div>
+                        <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # blues</div>
+                        <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon green">🟢</div>
+                    <div class="color-info">
+                        <div class="color-name">GREEN</div>
+                        <div class="rule"><span class="icon">➖</span>-1pt per lower value green</div>
+                        <div class="rule"><span class="icon">🔁</span>Same value = no clash</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon yellow">🟡</div>
+                    <div class="color-info">
+                        <div class="color-name">YELLOW</div>
+                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon purple">🟣</div>
+                    <div class="color-info">
+                        <div class="color-name">PURPLE</div>
+                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
+                <strong>PASSING:</strong> Pass 1 card right after each round
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card-header">
+                <h1>PRISM</h1>
+                <p>QUICK REFERENCE</p>
+            </div>
+            <div class="colors-grid">
+                <div class="color-row">
+                    <div class="color-icon red">🔴</div>
+                    <div class="color-info">
+                        <div class="color-name">RED</div>
+                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
+                        <div class="rule"><span class="icon">🔁</span>Tied cards both ×2</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon blue">🔵</div>
+                    <div class="color-info">
+                        <div class="color-name">BLUE</div>
+                        <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # blues</div>
+                        <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon green">🟢</div>
+                    <div class="color-info">
+                        <div class="color-name">GREEN</div>
+                        <div class="rule"><span class="icon">➖</span>-1pt per lower value green</div>
+                        <div class="rule"><span class="icon">🔁</span>Same value = no clash</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon yellow">🟡</div>
+                    <div class="color-info">
+                        <div class="color-name">YELLOW</div>
+                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
+                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-icon purple">🟣</div>
+                    <div class="color-info">
+                        <div class="color-name">PURPLE</div>
+                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
+                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
+                <strong>PASSING:</strong> Pass 1 card right after each round
+            </div>
         </div>
     </div>
-
-    <div class="card-container multiple-cards">
-        <div class="card-header">
-            <h1>PRISM</h1>
-            <p>QUICK REFERENCE</p>
-        </div>
-        <div class="colors-grid">
-            <div class="color-row">
-                <div class="color-icon red">🔴</div>
-                <div class="color-info">
-                    <div class="color-name">RED</div>
-                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
-                    
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon blue">🔵</div>
-                <div class="color-info">
-                    <div class="color-name">BLUE</div>
-                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
-                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon green">🟢</div>
-                <div class="color-info">
-                    <div class="color-name">GREEN</div>
-                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
-                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon yellow">🟡</div>
-                <div class="color-info">
-                    <div class="color-name">YELLOW</div>
-                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                    <div class="rule"><span class="icon">🎨</span>-1pt per lower other color</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon purple">🟣</div>
-                <div class="color-info">
-                    <div class="color-name">PURPLE</div>
-                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
-                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
-                </div>
-            </div>
-        </div>
-        <div class="footer">
-            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
-            <strong>PASSING:</strong> Pass 1 card right after each round
-        </div>
-    </div>
-
-    <div class="card-container multiple-cards">
-        <div class="card-header">
-            <h1>PRISM</h1>
-            <p>QUICK REFERENCE</p>
-        </div>
-        <div class="colors-grid">
-            <div class="color-row">
-                <div class="color-icon red">🔴</div>
-                <div class="color-info">
-                    <div class="color-name">RED</div>
-                    <div class="rule"><span class="icon">↓</span>Lowest ×2, others negative</div>
-                    
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon blue">🔵</div>
-                <div class="color-info">
-                    <div class="color-name">BLUE</div>
-                    <div class="rule"><span class="icon">➕</span>Sum all blues ÷ # of blues</div>
-                    <div class="rule"><span class="icon">🤝</span>Shared pool (round down)</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon green">🟢</div>
-                <div class="color-info">
-                    <div class="color-name">GREEN</div>
-                    <div class="rule"><span class="icon">➖</span>-1pt per lower green played</div>
-                    <div class="rule"><span class="icon">↑</span>High greens = better</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon yellow">🟡</div>
-                <div class="color-info">
-                    <div class="color-name">YELLOW</div>
-                    <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                    <div class="rule"><span class="icon">🎨</span>-1pt per lower other color</div>
-                </div>
-            </div>
-            <div class="color-row">
-                <div class="color-icon purple">🟣</div>
-                <div class="color-info">
-                    <div class="color-name">PURPLE</div>
-                    <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique</div>
-                    <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other</div>
-                </div>
-            </div>
-        </div>
-        <div class="footer">
-            <strong>CARD VALUES:</strong> Divided into 4 tiers by number<br>
-            <strong>PASSING:</strong> Pass 1 card right after each round
-        </div>
-    </div>
-
-    <script>
-        // Optional: Toggle between single card and 4-per-page for printing
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'm' || e.key === 'M') {
-                document.body.classList.toggle('print-multiple');
-            }
-        });
-    </script>
 </body>
 </html>
