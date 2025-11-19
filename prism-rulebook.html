@@ -167,60 +167,74 @@
         <p>PRISM is a tactical card game where each color has unique scoring abilities. Players must carefully choose which cards to play and which to pass to opponents, creating a dynamic game of strategy, prediction, and calculated risks.</p>
 
         <h2>Components</h2>
+        <p>PRISM uses a special deck system where card duplicates exist:</p>
         <ul>
-            <li><strong>Unique Deck:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)</li>
-            <li>Card distribution varies by player count (see table below)</li>
-            <li>Each player receives exactly 10 cards</li>
+            <li><strong>5 Colors:</strong> Red, Blue, Green, Yellow, Purple</li>
+            <li><strong>4 Values:</strong> 1, 2, 3, 4 (each card's number equals its victory point value)</li>
+            <li><strong>Multiple Copies:</strong> Each card exists in up to 3 copies</li>
         </ul>
 
         <table>
             <tr>
                 <th>Players</th>
-                <th>Numbers Range</th>
-                <th>Total Cards</th>
+                <th>Values Used</th>
+                <th>Copies per Value</th>
+                <th>Total Cards in Deck</th>
+                <th>Cards per Player</th>
             </tr>
             <tr>
                 <td>2</td>
-                <td>1-5</td>
-                <td>25</td>
+                <td>1, 2, 3</td>
+                <td>2 copies</td>
+                <td>30</td>
+                <td>10 (10 cards discarded)</td>
             </tr>
             <tr>
                 <td>3</td>
-                <td>1-6</td>
-                <td>30</td>
+                <td>1, 2, 3, 4</td>
+                <td>2 copies</td>
+                <td>40</td>
+                <td>10 (10 cards discarded)</td>
             </tr>
             <tr>
                 <td>4</td>
-                <td>1-8</td>
+                <td>1, 2, 3, 4</td>
+                <td>2 copies</td>
                 <td>40</td>
+                <td>10 (no cards discarded)</td>
             </tr>
             <tr>
                 <td>5</td>
-                <td>1-10</td>
-                <td>50</td>
+                <td>1, 2, 3, 4</td>
+                <td>3 copies</td>
+                <td>60</td>
+                <td>10 (10 cards discarded)</td>
             </tr>
             <tr>
                 <td>6</td>
-                <td>1-12</td>
+                <td>1, 2, 3, 4</td>
+                <td>3 copies</td>
                 <td>60</td>
+                <td>10 (no cards discarded)</td>
             </tr>
         </table>
 
         <h2>Card Values</h2>
-        <p>Cards are divided into 4 point tiers based on their number. Higher numbers are worth more points.</p>
-        
-        <div class="example">
-            <strong>Example (4 players, range 1-8):</strong><br>
-            • Numbers 1-2 = 1 point<br>
-            • Numbers 3-4 = 2 points<br>
-            • Numbers 5-6 = 3 points<br>
-            • Numbers 7-8 = 4 points
-        </div>
+        <p><strong>Simple Rule:</strong> A card's number equals its victory point value.</p>
+        <ul>
+            <li>Card 1 = 1 victory point</li>
+            <li>Card 2 = 2 victory points</li>
+            <li>Card 3 = 3 victory points</li>
+            <li>Card 4 = 4 victory points</li>
+        </ul>
+        <p>This makes scoring intuitive and allows duplicates to have consistent value across all player counts.</p>
 
         <h2>Setup</h2>
         <ol>
+            <li>Select the appropriate cards based on player count (see table above)</li>
             <li>Shuffle all cards together</li>
             <li>Deal 10 cards to each player</li>
+            <li>Remove remaining cards from the game (face-down, out of play)</li>
             <li>All players start with 0 points</li>
         </ol>
 
@@ -236,21 +250,19 @@
         <h3>3. Passing Phase</h3>
         <p>Each player chooses one card from their remaining hand to pass to the player on their right. This is a strategic decision that affects future rounds.</p>
 
-        <div class="important">
-            ⚠️ IMPORTANT: The passing phase does NOT occur in round 10 (the final round).
-        </div>
-
         <h2>Color Abilities</h2>
         <p>The core of PRISM's strategy lies in understanding how each color scores:</p>
 
         <div class="color-box">
             <h4>🔴 RED - Double or Nothing</h4>
-            <p>The LOWEST red card scores double points. All other red cards score negative points.</p>
+            <p>The LOWEST VALUE red card(s) score double points. All other red cards score negative points.</p>
+            <p><strong>Important:</strong> If multiple players play the same lowest value, ALL of them score ×2.</p>
             <div class="example">
-                <strong>Example:</strong> Red 2 (1pt), Red 5 (3pt), Red 7 (4pt) are played.<br>
-                • Red 2 (1pt base) = +2 points (doubled!)<br>
-                • Red 5 (3pt base) = -3 points<br>
-                • Red 7 (4pt base) = -4 points
+                <strong>Example:</strong> Two Red 2s (2pt each) and one Red 3 (3pt) are played.<br>
+                • Both Red 2 players: 2 × 2 = +4 points each (tied for lowest)<br>
+                • Red 3 player: -3 points<br>
+                <br>
+                <strong>Note:</strong> The negative score equals the card's value, not doubled.
             </div>
         </div>
 
@@ -258,35 +270,53 @@
             <h4>🔵 BLUE - Shared Pool</h4>
             <p>All blue card points are added together and divided equally among players who played blue (round down).</p>
             <div class="example">
-                <strong>Example:</strong> Three players play Blue 2 (1pt), Blue 4 (2pt), and Blue 6 (3pt).<br>
-                • Total pool: 1 + 2 + 3 = 6 points<br>
-                • Each player gets: 6 ÷ 3 = 2 points
+                <strong>Example:</strong> Three players play Blue 2 (2pt), Blue 3 (3pt), and Blue 4 (4pt).<br>
+                • Total pool: 2 + 3 + 4 = 9 points<br>
+                • Each player gets: 9 ÷ 3 = 3 points<br>
+                <br>
+                <strong>Duplicate Example:</strong> Two players play Blue 2 (2pt each), one plays Blue 4 (4pt).<br>
+                • Total pool: 2 + 2 + 4 = 8 points<br>
+                • Each player gets: 8 ÷ 3 = 2 points (rounded down)
             </div>
         </div>
 
         <div class="color-box">
             <h4>🟢 GREEN - Anti-Majority</h4>
-            <p>Each green card loses 1 point for every LOWER green card played (minimum 0).</p>
+            <p>Each green card loses 1 point for every LOWER VALUE green card played.</p>
+            <p><strong>Important:</strong> Cards of the same value do NOT clash with each other.</p>
             <div class="example">
-                <strong>Example:</strong> Green 2, Green 5, Green 8 are played.<br>
-                • Green 2 (1pt) - 0 lower greens = 1 point<br>
-                • Green 5 (3pt) - 1 lower green = 2 points<br>
-                • Green 8 (4pt) - 2 lower greens = 2 points
+                <strong>Example:</strong> Green 2, Green 3, Green 4 are played.<br>
+                • Green 2 (2pt) - 0 lower greens = 2 points<br>
+                • Green 3 (3pt) - 1 lower green (the 2) = 2 points<br>
+                • Green 4 (4pt) - 2 lower greens (the 2 and 3) = 2 points<br>
+                <br>
+                <strong>Duplicate Example:</strong> Two Green 2s (2pt each) and one Green 4 (4pt) are played.<br>
+                • Both Green 2 players: 2 - 0 = 2 points (same value cards don't clash)<br>
+                • Green 4 player: 4 - 2 = 2 points (two lower greens)<br>
+                <br>
+                <strong>Note:</strong> Green can go negative if there are many lower greens!
             </div>
         </div>
 
         <div class="color-box">
             <h4>🟡 YELLOW - Relative Scoring</h4>
             <p><strong>+1 point</strong> for each OTHER yellow card played.<br>
-            <strong>-1 point</strong> for each LOWER card of OTHER colors played.</p>
+            <strong>-1 point</strong> for each LOWER VALUE card of OTHER colors played.</p>
+            <p><strong>Important:</strong> Cards of the same value from other colors do NOT penalize yellow.</p>
             <div class="example">
-                <strong>Example:</strong> You play Yellow 8 (4pt base). Others play: Yellow 5, Yellow 10, Red 3, Green 6, Blue 7.<br>
-                • Base: 4 points<br>
-                • +2 points (two other yellows: 5 and 10)<br>
-                • -3 points (three lower other colors: Red 3, Green 6, Blue 7)<br>
-                • <strong>Total: 4 + 2 - 3 = 3 points</strong><br>
+                <strong>Example:</strong> You play Yellow 3 (3pt base). Others play: Yellow 2, Yellow 4, Red 2, Green 3, Blue 4.<br>
+                • Base: 3 points<br>
+                • +2 points (two other yellows: 2 and 4)<br>
+                • -1 point (one lower value other color: Red 2. Green 3 doesn't count because it's same value)<br>
+                • <strong>Total: 3 + 2 - 1 = 4 points</strong><br>
                 <br>
-                <strong>Note:</strong> Yellow 1 is always safe (no lower cards possible) but scores fewer points. High yellows score more base points but risk many lower cards!
+                <strong>Duplicate Example:</strong> You play Yellow 2. Others play: Yellow 2, Red 1, Red 1.<br>
+                • Base: 2 points<br>
+                • +1 point (one other yellow)<br>
+                • -2 points (two lower value cards: both Red 1s)<br>
+                • <strong>Total: 2 + 1 - 2 = 1 point</strong><br>
+                <br>
+                <strong>Note:</strong> Yellow 1 is always safe (no lower cards possible) but scores fewer points!
             </div>
         </div>
 
