@@ -266,12 +266,17 @@
 
         <div class="color-box">
             <h4>🟢 GREEN - Anti-Majority</h4>
-            <p>Each green card loses 2 points for every LOWER green card played (counts duplicates).</p>
+            <p>Each green card loses <strong>2 points per unique lower VALUE</strong> (duplicate values count as one). <strong>Minimum 0 points</strong> (can't go negative).</p>
             <div class="example">
-                <strong>Example:</strong> Green 4, Green 3, Green 3 are played.<br>
-                • Green 3 (3pt) - 0 lower greens = 3 points (same value don't clash)<br>
-                • Green 3 (3pt) - 0 lower greens = 3 points<br>
-                • Green 4 (4pt) - 2 lower greens ×2 = 4 - 4 = 0 points
+                <strong>Example 1:</strong> Green 3, Green 2, Green 2 are played.<br>
+                • Green 2 (2pt) - 0 unique lower values = 2 points<br>
+                • Green 2 (2pt) - 0 unique lower values = 2 points<br>
+                • Green 3 (3pt) - 1 unique lower value (the 2) = 3 - 2 = 1 point<br>
+                <br>
+                <strong>Example 2:</strong> Green 3, Green 2, Green 1 are played.<br>
+                • Green 1 (1pt) - 0 unique lower values = 1 point<br>
+                • Green 2 (2pt) - 1 unique lower value = 2 - 2 = 0 points<br>
+                • Green 3 (3pt) - 2 unique lower values = 3 - 4 = -1 → <strong>0 points</strong> (floor)
             </div>
         </div>
 
