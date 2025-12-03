@@ -492,13 +492,13 @@
                     <li><strong>🎨 COLOR ABILITIES:</strong>
                         <ul style="margin-top: 5px;">
                             <li><strong>🔴 RED (Double or Nothing):</strong> Lowest VALUE card(s) score ×2, others = negative. Tied cards both score ×2.</li>
-                            <li><strong>🔵 BLUE (Shared Pool):</strong> All blues summed and divided equally among blue players (round down).</li>
-                            <li><strong>🟢 GREEN (Anti-Majority):</strong> -1pt for each LOWER VALUE green. Same value cards don't clash.</li>
-                            <li><strong>🟡 YELLOW (Relative):</strong> +1pt per other yellow, -1pt per LOWER VALUE card (other colors). Same value cards don't clash.</li>
+                            <li><strong>🔵 BLUE (Anchor):</strong> All blues score points equal to the LOWEST blue value played.</li>
+                            <li><strong>🟢 GREEN (Anti-Majority):</strong> -2pt for each LOWER VALUE green (counts duplicates). Same value cards don't clash.</li>
+                            <li><strong>🟡 YELLOW (Relative):</strong> +1pt per other yellow, -1pt per LOWER VALUE card (other colors, counts duplicates). Same value cards don't clash.</li>
                             <li><strong>🟣 PURPLE (Cooperation):</strong>
                                 <ul style="margin-top: 3px;">
-                                    <li>2-3 players: positive only if you're the ONLY purple, otherwise negative</li>
-                                    <li>4-6 players: positive if at least 1 other purple is played, otherwise negative</li>
+                                    <li>2-3 players: positive only if you're the ONLY purple, otherwise 0 points</li>
+                                    <li>4-6 players: positive if at least 1 other purple is played, otherwise 0 points</li>
                                 </ul>
                             </li>
                         </ul>
@@ -566,9 +566,9 @@
             purple: 'Purple'
         };
 
-        // Calcola il valore in punti di una carta (FISSO per stampa fisica)
+        // Calcola il valore in points di una carta (FISSO per stampa fisica)
         // Valori stampati sulle carte indipendentemente dal numero di giocatori
-        // NUOVO SISTEMA: Il valore della carta = punti vittoria
+        // NUOVO SISTEMA: Il valore della carta = points vittoria
         function getCardPoints(cardNumber) {
             return cardNumber; // Carta 1 = 1pt, carta 2 = 2pt, carta 3 = 3pt, carta 4 = 4pt
         }
@@ -785,7 +785,7 @@
                             <div class="player-name">${player.name}</div>
                             <div class="player-score">${player.score} pt</div>
                         </div>
-                        <div class="selected-card-display">${gameState.selectedCards[player.id] ? '✓ Ready' : '⏳ Choosing...'}</div>
+                        <div class="selected-card-display">${gameState.selectedCards[player.id] ? '✓ Ready' : 'â³ Choosing...'}</div>
                         ${visibleHTML}
                     `;
                 }
@@ -885,19 +885,19 @@
                     }
                     
                 } else if (card.color === 'blue') {
-                    // BLU: pool condiviso
+                    // BLU: ogni blu fa points pari al valore blu più basso giocato
                     const blueCards = allCards.filter(c => c.card.color === 'blue');
-                    const totalBlue = blueCards.reduce((sum, c) => sum + c.card.points, 0);
-                    score = Math.floor(totalBlue / blueCards.length);
-                    message = `Blue pool (${totalBlue}÷${blueCards.length})`;
+                    const lowestBlueValue = Math.min(...blueCards.map(c => c.card.number));
+                    score = lowestBlueValue;
+                    message = `Lowest blue: ${lowestBlueValue}`;
                     
                 } else if (card.color === 'green') {
-                    // VERDE: -1 punto per ogni verde di VALORE inferiore
-                    // Carte dello stesso valore NON si scontrano
+                    // GREEN: -2 points per lower value green
+                    // Same value cards don't clash
                     const greenCards = allCards.filter(c => c.card.color === 'green');
                     const lowerGreens = greenCards.filter(c => c.card.number < card.number).length;
-                    score = card.points - lowerGreens;
-                    message = lowerGreens > 0 ? `${card.points} - ${lowerGreens} lower greens` : `No lower greens`;
+                    score = card.points - (lowerGreens * 2);
+                    message = lowerGreens > 0 ? `${card.points} - ${lowerGreens * 2} (${lowerGreens} lower ×2)` : `No lower greens`;
                     
                 } else if (card.color === 'yellow') {
                     // GIALLO: +1 per ogni altro giallo, -1 per ogni carta di VALORE inferiore (altri colori)
@@ -912,27 +912,27 @@
                     message = `${card.points} + ${otherYellows} yellows - ${lowerOtherColors} lower`;
                     
                 } else if (card.color === 'purple') {
-                    // VIOLA: regola differenziata per player count
+                    // PURPLE: rule varies by player count
                     const purpleCards = allCards.filter(c => c.card.color === 'purple');
                     const otherPurples = purpleCards.length - 1;
                     
                     if (gameState.numPlayers <= 3) {
-                        // 2-3 giocatori: SOLO se sei l'unico viola
+                        // 2-3 players: only if you're the ONLY purple
                         if (otherPurples === 0) {
                             score = card.points;
                             message = 'Unique purple!';
                         } else {
-                            score = -card.points;
-                            message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''}`;
+                            score = 0;
+                            message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''} (0pt)`;
                         }
                     } else {
-                        // 4-6 giocatori: serve almeno 1 altro viola
+                        // 4-6 players: need at least 1 other purple
                         if (otherPurples >= 1) {
                             score = card.points;
                             message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''}!`;
                         } else {
-                            score = -card.points;
-                            message = 'No other purple';
+                            score = 0;
+                            message = 'No other purple (0pt)';
                         }
                     }
                 }
@@ -949,7 +949,7 @@
                         <div class="player-label">${info.player.name}</div>
                         <div class="score-result ${scoreClass}">
                             ${message}<br>
-                            ${score > 0 ? '+' : ''}${score} punti
+                            ${score > 0 ? '+' : ''}${score} points
                         </div>
                     </div>
                 `;
@@ -998,7 +998,7 @@
                 if (humanPlayer.visibleCards.length > 0) {
                     // Auto-pass visible cards (no selection needed)
                     document.getElementById('instruction').innerHTML = 
-                        '<strong>➡️ Passing Phase</strong> - Passing visible cards automatically...';
+                        '<strong>➡️ Passing Phase</strong> - Passing visible cards automatically...';
                     
                     const passSection = document.getElementById('pass-section');
                     passSection.style.display = 'block';
@@ -1017,7 +1017,7 @@
             
             // Standard passing: select from hand
             document.getElementById('instruction').innerHTML = 
-                '<strong>➡️ Passing Phase</strong> - Select a card to pass to the player on your right';
+                '<strong>➡️ Passing Phase</strong> - Select a card to pass to the player on your right';
             
             const passSection = document.getElementById('pass-section');
             passSection.style.display = 'block';
@@ -1157,7 +1157,7 @@
                 html += `
                     <div class="final-score-item ${isWinner ? 'winner' : ''}">
                         <span>${index + 1}. ${player.name}</span>
-                        <span>${player.score} punti</span>
+                        <span>${player.score} points</span>
                     </div>
                 `;
             });
