@@ -493,7 +493,7 @@
                         <ul style="margin-top: 5px;">
                             <li><strong>🔴 RED (Double or Nothing):</strong> Lowest VALUE card(s) score ×2, others = negative. Tied cards both score ×2.</li>
                             <li><strong>🔵 BLUE (Anchor):</strong> All blues score points equal to the LOWEST blue value played.</li>
-                            <li><strong>🟢 GREEN (Anti-Majority):</strong> -2pt for each LOWER VALUE green (counts duplicates). Same value cards don't clash.</li>
+                            <li><strong>🟢 GREEN (Anti-Majority):</strong> -2pt for each unique lower VALUE (duplicates count as one). Minimum 0 points.</li>
                             <li><strong>🟡 YELLOW (Relative):</strong> +1pt per other yellow, -1pt per LOWER VALUE card (other colors, counts duplicates). Same value cards don't clash.</li>
                             <li><strong>🟣 PURPLE (Cooperation):</strong>
                                 <ul style="margin-top: 3px;">
@@ -892,12 +892,18 @@
                     message = `Lowest blue: ${lowestBlueValue}`;
                     
                 } else if (card.color === 'green') {
-                    // GREEN: -2 points per lower value green
-                    // Same value cards don't clash
+                    // GREEN: -2 points per unique lower VALUE (not per card)
+                    // Same value cards don't clash, minimum 0 points
                     const greenCards = allCards.filter(c => c.card.color === 'green');
-                    const lowerGreens = greenCards.filter(c => c.card.number < card.number).length;
-                    score = card.points - (lowerGreens * 2);
-                    message = lowerGreens > 0 ? `${card.points} - ${lowerGreens * 2} (${lowerGreens} lower ×2)` : `No lower greens`;
+                    const lowerValues = [...new Set(greenCards.filter(c => c.card.number < card.number).map(c => c.card.number))];
+                    const uniqueLowerCount = lowerValues.length;
+                    const rawScore = card.points - (uniqueLowerCount * 2);
+                    score = Math.max(0, rawScore);
+                    if (uniqueLowerCount > 0) {
+                        message = rawScore < 0 ? `${card.points} - ${uniqueLowerCount * 2} → 0 (floor)` : `${card.points} - ${uniqueLowerCount * 2} (${uniqueLowerCount} unique)`;
+                    } else {
+                        message = `No lower greens`;
+                    }
                     
                 } else if (card.color === 'yellow') {
                     // GIALLO: +1 per ogni altro giallo, -1 per ogni carta di VALORE inferiore (altri colori)
