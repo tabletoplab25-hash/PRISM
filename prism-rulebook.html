@@ -244,6 +244,7 @@
         <p>Each player chooses one card from their remaining hand to pass to the player on their right. This is a strategic decision that affects future rounds.</p>
 
 
+
         <h2>Color Abilities</h2>
         <p>The core of PRISM's strategy lies in understanding how each color scores:</p>
 
@@ -300,17 +301,24 @@
         </div>
 
         <div class="color-box">
-            <h4>🟣 PURPLE - Cooperation (Player Count Dependent)</h4>
-            <p><strong>2-3 Players:</strong> Purple scores positive ONLY if you're the ONLY purple played. If others also play purple, you score 0 points.</p>
-            <p><strong>4-6 Players:</strong> Purple scores positive if at least 1 OTHER purple is played. If you're the only purple, you score 0 points.</p>
+            <h4>🟣 PURPLE - Cycle</h4>
+            <p>Each purple card scores points equal to the <strong>NEXT purple value</strong> in ascending order. The highest value cycles back to the lowest.</p>
+            <p>If only one unique purple value is played (solo or all same), each scores its own value.</p>
             <div class="example">
-                <strong>Example (2 players):</strong><br>
-                • If only you play purple → Positive!<br>
-                • If both play purple → Both score 0 points!<br>
+                <strong>Example 1:</strong> Purple 1, Purple 3, Purple 4 are played.<br>
+                • Values in order: 1 → 3 → 4 → (cycle) → 1<br>
+                • Purple 1 → scores 3 points (next value)<br>
+                • Purple 3 → scores 4 points (next value)<br>
+                • Purple 4 → scores 1 point (cycles back)<br>
                 <br>
-                <strong>Example (5 players):</strong><br>
-                • If 2+ purples played → All purples positive! (cooperation)<br>
-                • If only 1 purple played → That player scores 0 points (no cooperation)
+                <strong>Example 2:</strong> Purple 2, Purple 3, Purple 3 are played.<br>
+                • Unique values in order: 2 → 3 → (cycle) → 2<br>
+                • Purple 2 → scores 3 points<br>
+                • Purple 3 → scores 2 points (both 3s cycle to 2)<br>
+                • Purple 3 → scores 2 points<br>
+                <br>
+                <strong>Example 3:</strong> Only Purple 4 is played (solo).<br>
+                • Purple 4 → scores 4 points (own value)
             </div>
         </div>
 
@@ -323,7 +331,7 @@
             <li><strong>Blue:</strong> Your high blues are vulnerable to low blues! Try to avoid playing alone.</li>
             <li><strong>Green:</strong> Play high to avoid penalties from lower greens.</li>
             <li><strong>Yellow:</strong> Complex but powerful. Predict what others will play.</li>
-            <li><strong>Purple:</strong> Risk everything for cooperation (or uniqueness in 2-3p).</li>
+            <li><strong>Purple:</strong> Play low to "steal" high values, but watch out for someone cycling back to you!</li>
             <li><strong>Passing:</strong> Give away dangerous cards or set up future combinations.</li>
             <li><strong>Card Counting:</strong> Remember what colors have been played to predict opponents' hands.</li>
         </ul>
