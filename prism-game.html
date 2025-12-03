@@ -479,11 +479,11 @@
                 <ul>
                     <li><strong>Deck Composition:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)
                         <ul style="margin-top: 5px;">
-                            <li>Card values: 1, 2, 3, 4 (each value = victory points)</li>
-                            <li>Each card exists in up to 3 copies</li>
-                            <li>2 players: 2 copies of values 1-3 (30 cards total)</li>
-                            <li>3-4 players: 2 copies of values 1-4 (40 cards total)</li>
-                            <li>5-6 players: 3 copies of values 1-4 (60 cards total)</li>
+                            <li>Card values: 1, 2, 3, 4 (value = victory points)</li>
+                            <li>2 players: 2 copies of values 1-3 (30 cards)</li>
+                            <li>3 players: + 1 copy of value 4 (35 cards)</li>
+                            <li>4 players: + 1 more copy of value 4 (40 cards)</li>
+                            <li>5-6 players: + 1 complete set of 1-4 (60 cards)</li>
                             <li><strong>Each player always receives exactly 10 cards</strong></li>
                             <li>Remaining cards are removed from play (face-down)</li>
                         </ul>
@@ -495,12 +495,7 @@
                             <li><strong>🔵 BLUE (Anchor):</strong> All blues score points equal to the LOWEST blue value played.</li>
                             <li><strong>🟢 GREEN (Anti-Majority):</strong> -2pt for each unique lower VALUE (duplicates count as one). Minimum 0 points.</li>
                             <li><strong>🟡 YELLOW (Relative):</strong> +1pt per other yellow, -1pt per LOWER VALUE card (other colors, counts duplicates). Same value cards don't clash.</li>
-                            <li><strong>🟣 PURPLE (Cooperation):</strong>
-                                <ul style="margin-top: 3px;">
-                                    <li>2-3 players: positive only if you're the ONLY purple, otherwise 0 points</li>
-                                    <li>4-6 players: positive if at least 1 other purple is played, otherwise 0 points</li>
-                                </ul>
-                            </li>
+                            <li><strong>🟣 PURPLE (Cycle):</strong> Score = NEXT purple value in ascending order. Highest cycles back to lowest. Solo = own value.</li>
                         </ul>
                     </li>
                     <li><strong>Passing:</strong> At the end of each round, pass one card to the right</li>
@@ -590,11 +585,15 @@
         }
 
         function createDeck(numPlayers) {
-            // NUOVO SISTEMA: Carte 1-4, ogni valore in 3 copie, 5 colori
+            // Card system: values 1-4, points = value
+            // 2p: 2 copies of 1,2,3 = 30 cards
+            // 3p: 2 copies of 1,2,3 + 1 copy of 4 = 35 cards
+            // 4p: 2 copies of 1,2,3,4 = 40 cards
+            // 5-6p: 3 copies of 1,2,3,4 = 60 cards
             const deck = [];
             
             if (numPlayers === 2) {
-                // 2 copie di valori 1,2,3 (30 carte totali, 15 per giocatore)
+                // 2 copies of values 1,2,3 (30 cards total)
                 COLORS.forEach(color => {
                     for (let value = 1; value <= 3; value++) {
                         for (let copy = 1; copy <= 2; copy++) {
@@ -608,8 +607,31 @@
                         }
                     }
                 });
-            } else if (numPlayers === 3 || numPlayers === 4) {
-                // 2 copie di valori 1,2,3,4 (40 carte totali, 10 per giocatore)
+            } else if (numPlayers === 3) {
+                // 2 copies of values 1,2,3 + 1 copy of value 4 (35 cards total)
+                COLORS.forEach(color => {
+                    for (let value = 1; value <= 3; value++) {
+                        for (let copy = 1; copy <= 2; copy++) {
+                            deck.push({
+                                id: `${color}-${value}-c${copy}`,
+                                color,
+                                number: value,
+                                points: value,
+                                copyNumber: copy
+                            });
+                        }
+                    }
+                    // Add 1 copy of value 4
+                    deck.push({
+                        id: `${color}-4-c1`,
+                        color,
+                        number: 4,
+                        points: 4,
+                        copyNumber: 1
+                    });
+                });
+            } else if (numPlayers === 4) {
+                // 2 copies of values 1,2,3,4 (40 cards total)
                 COLORS.forEach(color => {
                     for (let value = 1; value <= 4; value++) {
                         for (let copy = 1; copy <= 2; copy++) {
@@ -624,7 +646,7 @@
                     }
                 });
             } else {
-                // 5-6 giocatori: 3 copie di tutti i valori 1,2,3,4 (60 carte totali, 10 per giocatore)
+                // 5-6 players: 3 copies of all values 1,2,3,4 (60 cards total)
                 COLORS.forEach(color => {
                     for (let value = 1; value <= 4; value++) {
                         for (let copy = 1; copy <= 3; copy++) {
@@ -918,28 +940,21 @@
                     message = `${card.points} + ${otherYellows} yellows - ${lowerOtherColors} lower`;
                     
                 } else if (card.color === 'purple') {
-                    // PURPLE: rule varies by player count
+                    // PURPLE "Cycle": Score = next purple value in ascending order (cycles back)
                     const purpleCards = allCards.filter(c => c.card.color === 'purple');
-                    const otherPurples = purpleCards.length - 1;
+                    const uniqueValues = [...new Set(purpleCards.map(c => c.card.number))].sort((a, b) => a - b);
                     
-                    if (gameState.numPlayers <= 3) {
-                        // 2-3 players: only if you're the ONLY purple
-                        if (otherPurples === 0) {
-                            score = card.points;
-                            message = 'Unique purple!';
-                        } else {
-                            score = 0;
-                            message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''} (0pt)`;
-                        }
+                    if (uniqueValues.length === 1) {
+                        // Only one unique value (could be multiple cards with same value, or solo)
+                        score = card.number;
+                        message = purpleCards.length === 1 ? 'Solo purple' : `All same value`;
                     } else {
-                        // 4-6 players: need at least 1 other purple
-                        if (otherPurples >= 1) {
-                            score = card.points;
-                            message = `${otherPurples} other purple${otherPurples > 1 ? 's' : ''}!`;
-                        } else {
-                            score = 0;
-                            message = 'No other purple (0pt)';
-                        }
+                        // Multiple unique values - cycle to next
+                        const myIndex = uniqueValues.indexOf(card.number);
+                        const nextIndex = (myIndex + 1) % uniqueValues.length;
+                        const nextValue = uniqueValues[nextIndex];
+                        score = nextValue;
+                        message = `${card.number} → ${nextValue} (cycle)`;
                     }
                 }
                 
