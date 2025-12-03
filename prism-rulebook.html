@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRISM - Quick Reference Card</title>
+    <title>PRISM - Official Rulebook</title>
     <style>
         * {
             margin: 0;
@@ -12,148 +12,133 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: #2c3e50;
-            padding: 20px;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            line-height: 1.6;
         }
 
-        .print-info {
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            text-align: center;
+            padding: 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        .print-info h1 {
+        h1 {
+            font-size: 3em;
+            text-align: center;
             color: #667eea;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        li {
             margin-bottom: 10px;
         }
 
+        .color-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .color-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .example {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        .important {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
         .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             padding: 15px 30px;
             background: #667eea;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
-            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .print-button:hover {
             background: #5568d3;
-        }
-
-        .cards-page {
-            background: white;
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto 20px;
-            padding: 10mm;
-            display: grid;
-            grid-template-columns: repeat(3, 63mm);
-            grid-template-rows: repeat(2, 88mm);
-            gap: 5mm;
-            justify-content: center;
-            align-content: center;
-            page-break-after: always;
-        }
-
-        .card-container {
-            background: white;
-            width: 63mm;
-            height: 88mm;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 2px solid #333;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px;
-            text-align: center;
-        }
-
-        .card-header h1 {
-            font-size: 20px;
-            letter-spacing: 3px;
-            margin-bottom: 2px;
-        }
-
-        .card-header p {
-            font-size: 8px;
-            opacity: 0.9;
-        }
-
-        .colors-grid {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 6px;
-            gap: 3px;
-        }
-
-        .color-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 6px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        .color-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-            color: white;
-            font-weight: bold;
-        }
-
-        .color-icon.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-        .color-icon.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
-        .color-icon.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-        .color-icon.yellow { background: linear-gradient(135deg, #f1c40f, #f39c12); }
-        .color-icon.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-
-        .color-info {
-            flex: 1;
-            font-size: 7px;
-            line-height: 1.3;
-        }
-
-        .color-name {
-            font-weight: bold;
-            font-size: 8px;
-            margin-bottom: 1px;
-        }
-
-        .rule {
-            color: #555;
-        }
-
-        .icon {
-            font-size: 9px;
-            margin-right: 2px;
-        }
-
-        .footer {
-            background: #f8f9fa;
-            padding: 4px;
-            text-align: center;
-            font-size: 6px;
-            color: #666;
-            border-top: 1px solid #ddd;
         }
 
         @media print {
@@ -161,377 +146,256 @@
                 background: white;
                 padding: 0;
             }
-
-            .print-info,
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
             .print-button {
                 display: none;
             }
-
-            .cards-page {
-                margin: 0;
-                padding: 10mm;
-                box-shadow: none;
-                page-break-after: always;
-            }
-
-            .card-container {
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
-        }
-
-        @page {
-            size: A4;
-            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="print-info">
-        <h1>🎴 PRISM - Quick Reference Card</h1>
-        <p><strong>Format:</strong> 6 cards per A4 sheet (63mm × 88mm poker size)</p>
-        <button class="print-button" onclick="window.print()">🖨️ Print Cards</button>
-        <p style="margin-top: 15px; font-size: 14px; color: #666;">
-            <strong>Printing Tips:</strong><br>
-            • Use quality paper (at least 160gsm)<br>
-            • Print in color with "Actual Size" setting<br>
-            • Cut precisely along borders<br>
-            • Consider laminating for durability
+    <button class="print-button" onclick="window.print()">🖨ï¸ Print Rulebook</button>
+    
+    <div class="container">
+        <h1>PRISM</h1>
+        <p class="subtitle">A Strategic Color Card Game for 2-6 Players</p>
+
+        <h2>Overview</h2>
+        <p>PRISM is a tactical card game where each color has unique scoring abilities. Players must carefully choose which cards to play and which to pass to opponents, creating a dynamic game of strategy, prediction, and calculated risks.</p>
+
+        <h2>Components</h2>
+        <ul>
+            <li><strong>Unique Deck:</strong> 5 colors (Red, Blue, Green, Yellow, Purple)</li>
+            <li>Card values: 1, 2, 3, 4 (points = value)</li>
+            <li>Each player receives exactly 10 cards</li>
+            <li>Remaining cards are removed from play (face-down)</li>
+        </ul>
+
+        <table>
+            <tr>
+                <th>Players</th>
+                <th>Deck Composition</th>
+                <th>Total Cards</th>
+                <th>Discarded</th>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>2 copies of values 1-3</td>
+                <td>30</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>+ 1 copy of value 4</td>
+                <td>35</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>+ 1 more copy of value 4</td>
+                <td>40</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>+ 1 complete set (1-4)</td>
+                <td>60</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Same as 5 players</td>
+                <td>60</td>
+                <td>0</td>
+            </tr>
+        </table>
+
+        <h2>Card Values</h2>
+        <p>The number on the card equals its victory point value. Simple!</p>
+        
+        <div class="example">
+            <strong>Card Value = Points:</strong><br>
+            • Card 1 = 1 point<br>
+            • Card 2 = 2 points<br>
+            • Card 3 = 3 points<br>
+            • Card 4 = 4 points
+        </div>
+
+        <h2>Setup</h2>
+        <ol>
+            <li>Shuffle all cards together</li>
+            <li>Deal 10 cards to each player</li>
+            <li>All players start with 0 points</li>
+        </ol>
+
+        <h2>Game Flow</h2>
+        <p>The game consists of 10 rounds. Each round follows these phases:</p>
+
+        <h3>1. Selection Phase</h3>
+        <p>All players simultaneously choose one card from their hand to play face-down.</p>
+
+        <h3>2. Reveal Phase</h3>
+        <p>All cards are revealed simultaneously. Points are calculated based on each color's special ability (see Color Abilities section).</p>
+
+        <h3>3. Passing Phase</h3>
+        <p>Each player chooses one card from their remaining hand to pass to the player on their right. This is a strategic decision that affects future rounds.</p>
+
+
+        <h2>Color Abilities</h2>
+        <p>The core of PRISM's strategy lies in understanding how each color scores:</p>
+
+        <div class="color-box">
+            <h4>🔴 RED - Double or Nothing</h4>
+            <p>The LOWEST red card scores double points. All other red cards score negative points.</p>
+            <div class="example">
+                <strong>Example:</strong> Red 1, Red 3, Red 4 are played.<br>
+                • Red 1 (1pt base) = +2 points (doubled!)<br>
+                • Red 3 (3pt base) = -3 points<br>
+                • Red 4 (4pt base) = -4 points
+            </div>
+        </div>
+
+        <div class="color-box">
+            <h4>🔵 BLUE - Anchor</h4>
+            <p>All blue cards score points equal to the LOWEST blue value played. The lowest blue "anchors" everyone's score.</p>
+            <div class="example">
+                <strong>Example:</strong> Three players play Blue 1, Blue 3, and Blue 4.<br>
+                • Lowest blue value: 1<br>
+                • All three players score: 1 point each
+            </div>
+        </div>
+
+        <div class="color-box">
+            <h4>🟢 GREEN - Anti-Majority</h4>
+            <p>Each green card loses <strong>2 points per unique lower VALUE</strong> (duplicate values count as one). <strong>Minimum 0 points</strong> (can't go negative).</p>
+            <div class="example">
+                <strong>Example 1:</strong> Green 3, Green 2, Green 2 are played.<br>
+                • Green 2 (2pt) - 0 unique lower values = 2 points<br>
+                • Green 2 (2pt) - 0 unique lower values = 2 points<br>
+                • Green 3 (3pt) - 1 unique lower value (the 2) = 3 - 2 = 1 point<br>
+                <br>
+                <strong>Example 2:</strong> Green 3, Green 2, Green 1 are played.<br>
+                • Green 1 (1pt) - 0 unique lower values = 1 point<br>
+                • Green 2 (2pt) - 1 unique lower value = 2 - 2 = 0 points<br>
+                • Green 3 (3pt) - 2 unique lower values = 3 - 4 = -1 → <strong>0 points</strong> (floor)
+            </div>
+        </div>
+
+        <div class="color-box">
+            <h4>🟡 YELLOW - Relative Scoring</h4>
+            <p><strong>+1 point</strong> for each OTHER yellow card played.<br>
+            <strong>-1 point</strong> for each LOWER card of OTHER colors played.</p>
+            <div class="example">
+                <strong>Example:</strong> You play Yellow 4 (4pt base). Others play: Yellow 2, Yellow 3, Red 1, Green 2, Blue 3.<br>
+                • Base: 4 points<br>
+                • +2 points (two other yellows: 2 and 3)<br>
+                • -3 points (three lower other colors: Red 1, Green 2, Blue 3)<br>
+                • <strong>Total: 4 + 2 - 3 = 3 points</strong><br>
+                <br>
+                <strong>Note:</strong> Yellow 1 is safe (no lower cards possible) but scores fewer base points.
+            </div>
+        </div>
+
+        <div class="color-box">
+            <h4>🟣 PURPLE - Cooperation (Player Count Dependent)</h4>
+            <p><strong>2-3 Players:</strong> Purple scores positive ONLY if you're the ONLY purple played. If others also play purple, you score 0 points.</p>
+            <p><strong>4-6 Players:</strong> Purple scores positive if at least 1 OTHER purple is played. If you're the only purple, you score 0 points.</p>
+            <div class="example">
+                <strong>Example (2 players):</strong><br>
+                • If only you play purple → Positive!<br>
+                • If both play purple → Both score 0 points!<br>
+                <br>
+                <strong>Example (5 players):</strong><br>
+                • If 2+ purples played → All purples positive! (cooperation)<br>
+                • If only 1 purple played → That player scores 0 points (no cooperation)
+            </div>
+        </div>
+
+        <h2>End of Game</h2>
+        <p>After 10 rounds, the game ends. The player with the highest total score wins!</p>
+
+        <h2>Strategy Tips</h2>
+        <ul>
+            <li><strong>Red:</strong> Play low to win big, but watch out for even lower reds!</li>
+            <li><strong>Blue:</strong> Your high blues are vulnerable to low blues! Try to avoid playing alone.</li>
+            <li><strong>Green:</strong> Play high to avoid penalties from lower greens.</li>
+            <li><strong>Yellow:</strong> Complex but powerful. Predict what others will play.</li>
+            <li><strong>Purple:</strong> Risk everything for cooperation (or uniqueness in 2-3p).</li>
+            <li><strong>Passing:</strong> Give away dangerous cards or set up future combinations.</li>
+            <li><strong>Card Counting:</strong> Remember what colors have been played to predict opponents' hands.</li>
+        </ul>
+
+        <h2>Game Variants</h2>
+        <p>PRISM offers different variants to adjust the level of information and strategic depth.</p>
+
+        <h3>Standard Variant (Hidden Information)</h3>
+        <p>This is the classic PRISM experience. All players start with 10 cards in hand, completely hidden from opponents. This creates maximum uncertainty and emphasizes:</p>
+        <ul>
+            <li>Memory and card counting</li>
+            <li>Risk assessment</li>
+            <li>Psychological reads</li>
+            <li>Adapting to unexpected reveals</li>
+        </ul>
+
+        <h3>Open Information Variant (Recommended for Strategic Players)</h3>
+        <p>This variant reduces blind play and adds visible planning opportunities.</p>
+
+        <div class="color-box">
+            <h4>🎲 Setup Differences</h4>
+            <p>Each player receives their 10 cards split into:</p>
+            <ul>
+                <li><strong>5 cards in hand</strong> (hidden from opponents)</li>
+                <li><strong>5 visible cards</strong> (face-up, visible to all players)</li>
+            </ul>
+        </div>
+
+        <div class="color-box">
+            <h4>📋 Gameplay Rules</h4>
+            <p><strong>Playing Cards:</strong></p>
+            <ul>
+                <li>You can ONLY play cards from your hand (hidden cards)</li>
+                <li>Visible cards cannot be played directly</li>
+                <li>This maintains suspense while giving strategic information</li>
+            </ul>
+            
+            <p><strong>Passing Cards:</strong></p>
+            <ul>
+                <li><strong>Priority 1:</strong> Visible cards are passed FIRST (automatically, one per round)</li>
+                <li>When you pass a visible card, it becomes HIDDEN for the player who receives it</li>
+                <li><strong>Priority 2:</strong> Once all visible cards are exhausted, pass from your hand as in Standard variant</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <strong>Example Round in Open Variant:</strong><br><br>
+            <strong>Setup:</strong> You have Yellow 4, Blue 3, Red 2 visible. In hand: Purple 3, Green 4, Red 1, Blue 2, Yellow 1.<br><br>
+            <strong>Round 1 - Play:</strong> You play Purple 3 from your hand. Your visible cards remain unchanged.<br><br>
+            <strong>Round 1 - Pass:</strong> Your first visible card (Yellow 4) is automatically passed to the right. That player receives it in their hand (hidden). You now have 4 visible cards and 4 cards in hand.<br><br>
+            <strong>Strategic Note:</strong> Everyone saw you pass Yellow 4! They know your opponent received it and can plan accordingly.
+        </div>
+
+        <h3>Why Play Open Information?</h3>
+        <ul>
+            <li><strong>Less "blind" gameplay:</strong> You know what cards are coming and where they'll go</li>
+            <li><strong>Enhanced strategy:</strong> Plan several rounds ahead based on visible information</li>
+            <li><strong>Social dynamics:</strong> "I'm passing you a Purple 4... you'd better play it!"</li>
+            <li><strong>Reduced luck:</strong> Skilled players can better predict and control outcomes</li>
+            <li><strong>Teaching tool:</strong> New players can observe what cards are in play</li>
+        </ul>
+
+        <div class="important">
+            ⚠ï¸ <strong>Important:</strong> Once visible cards are depleted (after 5 rounds), both variants play identically. This creates an interesting transition from open information to hidden information mid-game!
+        </div>
+
+        <h2>Credits</h2>
+        <p style="text-align: center; margin-top: 40px; color: #666;">
+            <strong>PRISM</strong><br>
+            A strategic card game of color and calculation<br>
+            © 2025
         </p>
-    </div>
-
-    <div class="cards-page">
-        <!-- Card 1 -->
-        <div class="card-container">
-            <div class="card-header">
-                <h1>PRISM</h1>
-                <p>QUICK REFERENCE</p>
-            </div>
-
-            <div class="colors-grid">
-                <!-- RED -->
-                <div class="color-row">
-                    <div class="color-icon red">🔴</div>
-                    <div class="color-info">
-                        <div class="color-name">RED</div>
-                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
-                        <div class="rule"><span class="icon">🔗</span>Tied cards both ×2</div>
-                    </div>
-                </div>
-
-                <!-- BLUE -->
-                <div class="color-row">
-                    <div class="color-icon blue">🔵</div>
-                    <div class="color-info">
-                        <div class="color-name">BLUE</div>
-                        <div class="rule"><span class="icon">➕</span>All blues = lowest blue value</div>
-                        <div class="rule"><span class="icon">🤝</span>Low blue anchors all scores</div>
-                    </div>
-                </div>
-
-                <!-- GREEN -->
-                <div class="color-row">
-                    <div class="color-icon green">🟢</div>
-                    <div class="color-info">
-                        <div class="color-name">GREEN</div>
-                        <div class="rule"><span class="icon">➖</span>-2pt per unique lower value</div>
-                        <div class="rule"><span class="icon">🛡️</span>Dupes count once, min 0pt</div>
-                    </div>
-                </div>
-
-                <!-- YELLOW -->
-                <div class="color-row">
-                    <div class="color-icon yellow">🟡</div>
-                    <div class="color-info">
-                        <div class="color-name">YELLOW</div>
-                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
-                    </div>
-                </div>
-
-                <!-- PURPLE -->
-                <div class="color-row">
-                    <div class="color-icon purple">🟣</div>
-                    <div class="color-info">
-                        <div class="color-name">PURPLE</div>
-                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique score VP=card, otherwise 0pt</div>
-                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other score VP=card, otherwise 0pt</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer">
-                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
-                <strong>PASSING:</strong> Pass 1 card right after each round
-            </div>
-        </div>
-
-        <!-- Cards 2-6: Duplicates -->
-        <div class="card-container">
-            <div class="card-header">
-                <h1>PRISM</h1>
-                <p>QUICK REFERENCE</p>
-            </div>
-            <div class="colors-grid">
-                <div class="color-row">
-                    <div class="color-icon red">🔴</div>
-                    <div class="color-info">
-                        <div class="color-name">RED</div>
-                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
-                        <div class="rule"><span class="icon">🔗</span>Tied cards both ×2</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon blue">🔵</div>
-                    <div class="color-info">
-                        <div class="color-name">BLUE</div>
-                        <div class="rule"><span class="icon">➕</span>All blues = lowest blue value</div>
-                        <div class="rule"><span class="icon">🤝</span>Low blue anchors all scores</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon green">🟢</div>
-                    <div class="color-info">
-                        <div class="color-name">GREEN</div>
-                        <div class="rule"><span class="icon">➖</span>-2pt per unique lower value</div>
-                        <div class="rule"><span class="icon">🛡️</span>Dupes count once, min 0pt</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon yellow">🟡</div>
-                    <div class="color-info">
-                        <div class="color-name">YELLOW</div>
-                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon purple">🟣</div>
-                    <div class="color-info">
-                        <div class="color-name">PURPLE</div>
-                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique score VP=card, otherwise 0pt</div>
-                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other score VP=card, otherwise 0pt</div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
-                <strong>PASSING:</strong> Pass 1 card right after each round
-            </div>
-        </div>
-
-        <div class="card-container">
-            <div class="card-header">
-                <h1>PRISM</h1>
-                <p>QUICK REFERENCE</p>
-            </div>
-            <div class="colors-grid">
-                <div class="color-row">
-                    <div class="color-icon red">🔴</div>
-                    <div class="color-info">
-                        <div class="color-name">RED</div>
-                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
-                        <div class="rule"><span class="icon">🔗</span>Tied cards both ×2</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon blue">🔵</div>
-                    <div class="color-info">
-                        <div class="color-name">BLUE</div>
-                        <div class="rule"><span class="icon">➕</span>All blues = lowest blue value</div>
-                        <div class="rule"><span class="icon">🤝</span>Low blue anchors all scores</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon green">🟢</div>
-                    <div class="color-info">
-                        <div class="color-name">GREEN</div>
-                        <div class="rule"><span class="icon">➖</span>-2pt per unique lower value</div>
-                        <div class="rule"><span class="icon">🛡️</span>Dupes count once, min 0pt</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon yellow">🟡</div>
-                    <div class="color-info">
-                        <div class="color-name">YELLOW</div>
-                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon purple">🟣</div>
-                    <div class="color-info">
-                        <div class="color-name">PURPLE</div>
-                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique score VP=card, otherwise 0pt</div>
-                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other score VP=card, otherwise 0pt</div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
-                <strong>PASSING:</strong> Pass 1 card right after each round
-            </div>
-        </div>
-
-        <div class="card-container">
-            <div class="card-header">
-                <h1>PRISM</h1>
-                <p>QUICK REFERENCE</p>
-            </div>
-            <div class="colors-grid">
-                <div class="color-row">
-                    <div class="color-icon red">🔴</div>
-                    <div class="color-info">
-                        <div class="color-name">RED</div>
-                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
-                        <div class="rule"><span class="icon">🔗</span>Tied cards both ×2</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon blue">🔵</div>
-                    <div class="color-info">
-                        <div class="color-name">BLUE</div>
-                        <div class="rule"><span class="icon">➕</span>All blues = lowest blue value</div>
-                        <div class="rule"><span class="icon">🤝</span>Low blue anchors all scores</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon green">🟢</div>
-                    <div class="color-info">
-                        <div class="color-name">GREEN</div>
-                        <div class="rule"><span class="icon">➖</span>-2pt per unique lower value</div>
-                        <div class="rule"><span class="icon">🛡️</span>Dupes count once, min 0pt</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon yellow">🟡</div>
-                    <div class="color-info">
-                        <div class="color-name">YELLOW</div>
-                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon purple">🟣</div>
-                    <div class="color-info">
-                        <div class="color-name">PURPLE</div>
-                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique score VP=card, otherwise 0pt</div>
-                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other score VP=card, otherwise 0pt</div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
-                <strong>PASSING:</strong> Pass 1 card right after each round
-            </div>
-        </div>
-
-        <div class="card-container">
-            <div class="card-header">
-                <h1>PRISM</h1>
-                <p>QUICK REFERENCE</p>
-            </div>
-            <div class="colors-grid">
-                <div class="color-row">
-                    <div class="color-icon red">🔴</div>
-                    <div class="color-info">
-                        <div class="color-name">RED</div>
-                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
-                        <div class="rule"><span class="icon">🔗</span>Tied cards both ×2</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon blue">🔵</div>
-                    <div class="color-info">
-                        <div class="color-name">BLUE</div>
-                        <div class="rule"><span class="icon">➕</span>All blues = lowest blue value</div>
-                        <div class="rule"><span class="icon">🤝</span>Low blue anchors all scores</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon green">🟢</div>
-                    <div class="color-info">
-                        <div class="color-name">GREEN</div>
-                        <div class="rule"><span class="icon">➖</span>-2pt per unique lower value</div>
-                        <div class="rule"><span class="icon">🛡️</span>Dupes count once, min 0pt</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon yellow">🟡</div>
-                    <div class="color-info">
-                        <div class="color-name">YELLOW</div>
-                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon purple">🟣</div>
-                    <div class="color-info">
-                        <div class="color-name">PURPLE</div>
-                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique score VP=card, otherwise 0pt</div>
-                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other score VP=card, otherwise 0pt</div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
-                <strong>PASSING:</strong> Pass 1 card right after each round
-            </div>
-        </div>
-
-        <div class="card-container">
-            <div class="card-header">
-                <h1>PRISM</h1>
-                <p>QUICK REFERENCE</p>
-            </div>
-            <div class="colors-grid">
-                <div class="color-row">
-                    <div class="color-icon red">🔴</div>
-                    <div class="color-info">
-                        <div class="color-name">RED</div>
-                        <div class="rule"><span class="icon">↓</span>Lowest value(s) ×2, others negative</div>
-                        <div class="rule"><span class="icon">🔗</span>Tied cards both ×2</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon blue">🔵</div>
-                    <div class="color-info">
-                        <div class="color-name">BLUE</div>
-                        <div class="rule"><span class="icon">➕</span>All blues = lowest blue value</div>
-                        <div class="rule"><span class="icon">🤝</span>Low blue anchors all scores</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon green">🟢</div>
-                    <div class="color-info">
-                        <div class="color-name">GREEN</div>
-                        <div class="rule"><span class="icon">➖</span>-2pt per unique lower value</div>
-                        <div class="rule"><span class="icon">🛡️</span>Dupes count once, min 0pt</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon yellow">🟡</div>
-                    <div class="color-info">
-                        <div class="color-name">YELLOW</div>
-                        <div class="rule"><span class="icon">🟡</span>+1pt per other yellow</div>
-                        <div class="rule"><span class="icon">⬇️</span>-1pt per lower value (other)</div>
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="color-icon purple">🟣</div>
-                    <div class="color-info">
-                        <div class="color-name">PURPLE</div>
-                        <div class="rule"><span class="icon">2️⃣</span>2-3p: Only if unique score VP=card, otherwise 0pt</div>
-                        <div class="rule"><span class="icon">👥</span>4-6p: Need 1+ other score VP=card, otherwise 0pt</div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <strong>CARD VALUE = POINTS:</strong> Card 1 = 1pt, Card 2 = 2pt, etc.<br>
-                <strong>PASSING:</strong> Pass 1 card right after each round
-            </div>
-        </div>
     </div>
 </body>
 </html>
